@@ -1,0 +1,2085 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registros Sacramentales · SICA</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+    
+    :root {
+      --brand-navy: #002266;
+      --brand-accent: #0055ff;
+      --bg-gradient: linear-gradient(135deg, #f8fafd 0%, #e9effd 100%);
+      --surface: #ffffff;
+      --text-main: #1a1c21;
+      --text-muted: #5e6673;
+      --sidebar-width: 260px;
+      --sidebar-collapsed-width: 72px;
+    }
+
+    body { 
+      font-family: 'Plus Jakarta Sans', sans-serif; 
+      background: var(--bg-gradient); 
+      color: var(--text-main);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Navegación Lateral Estilo Moderno */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--surface);
+      border-right: 1px solid rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      padding: 2rem 1.5rem;
+      transition: width 0.3s ease;
+      position: relative;
+    }
+
+    /* Sidebar colapsado */
+    .sidebar.collapsed {
+      width: var(--sidebar-collapsed-width);
+      padding: 2rem 0.5rem;
+    }
+
+    .sidebar.collapsed .sidebar-text,
+    .sidebar.collapsed .sidebar-user-text,
+    .sidebar.collapsed .sidebar-title small,
+    .sidebar.collapsed .nav-pill-custom span:not(.icon-only),
+    .sidebar.collapsed .mt-auto .d-flex span,
+    .sidebar.collapsed .border-top .d-flex span,
+    .sidebar.collapsed .sidebar-title h4 span {
+      display: none;
+    }
+
+    .sidebar.collapsed .nav-pill-custom {
+      text-align: center;
+      padding: 0.8rem 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .sidebar.collapsed .nav-pill-custom i {
+      margin-right: 0 !important;
+      font-size: 1.2rem;
+    }
+
+    .sidebar.collapsed .mt-auto .d-flex {
+      justify-content: center;
+    }
+
+    .sidebar.collapsed .mt-auto .rounded-circle {
+      margin-right: 0 !important;
+    }
+
+    .sidebar.collapsed .btn-outline-danger {
+      font-size: 0;
+      padding: 0.5rem;
+    }
+
+    .sidebar.collapsed .btn-outline-danger i {
+      font-size: 1rem;
+      margin-right: 0;
+    }
+
+    .sidebar.collapsed .btn-outline-danger span {
+      display: none;
+    }
+
+    /* Botón minimizar */
+    .sidebar-toggle-btn {
+      position: absolute;
+      right: -12px;
+      top: 30px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      color: var(--brand-navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      z-index: 10;
+      font-size: 12px;
+    }
+
+    .sidebar-toggle-btn:hover {
+      background: var(--brand-navy);
+      color: white;
+      border-color: var(--brand-navy);
+    }
+
+    .sidebar.collapsed .sidebar-toggle-btn i {
+      transform: rotate(180deg);
+    }
+
+    /* Menú móvil (select) - visible solo en pantallas pequeñas */
+    .mobile-menu-select {
+      display: none;
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .mobile-menu-select select {
+      border: none;
+      background: transparent;
+      font-weight: 600;
+      color: var(--text-main);
+      outline: none;
+      width: 100%;
+    }
+
+    .nav-pill-custom {
+      border: none;
+      background: transparent;
+      padding: 0.8rem 1rem;
+      border-radius: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-align: left;
+      transition: all 0.3s ease;
+      margin-bottom: 0.5rem;
+      width: 100%;
+    }
+
+    .nav-pill-custom.active {
+      background: var(--brand-navy);
+      color: white;
+      box-shadow: 0 4px 12px rgba(0,34,102,0.2);
+    }
+
+    .nav-pill-custom:hover:not(.active) {
+      background: rgba(0,34,102,0.05);
+      color: var(--brand-navy);
+    }
+
+    /* Contenedor Principal */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 2.5rem;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.4);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    }
+
+    .search-box {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-end;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .form-control-custom {
+      background: #f1f3f7;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      transition: all 0.3s;
+    }
+
+    .form-control-custom:focus {
+      background: white;
+      border-color: var(--brand-accent);
+      box-shadow: 0 0 0 4px rgba(0,85,255,0.1);
+      outline: none;
+    }
+
+    /* Formulario del modal "Nuevo/Editar" de Lista de Bautizos: inputs más compactos */
+    #panelCandidato label{
+      font-size:.72rem; font-weight:700; margin-bottom:.2rem; color:var(--text-muted);
+      text-transform:uppercase; letter-spacing:.3px;
+    }
+    #panelCandidato .form-control-custom{
+      padding:.5rem .7rem;
+      font-size:.85rem;
+      border-radius:9px;
+    }
+    #panelCandidato .row.g-2{ --bs-gutter-x:.6rem; }
+    #panelCandidato .mb-2{ margin-bottom:.6rem !important; }
+
+    /* Animación de guardado (check verde) en el botón "Guardar candidato" */
+    @keyframes candCheckPop{
+      0%{ transform:scale(0.4); opacity:0; }
+      60%{ transform:scale(1.15); opacity:1; }
+      100%{ transform:scale(1); opacity:1; }
+    }
+    .btn-guardado-ok{
+      background:#1b8f4c !important;
+      animation:candCheckPop .35s ease;
+    }
+    .btn-guardado-ok i{ animation:candCheckPop .4s ease; }
+
+    /* Tabla Estilo Premium */
+    .table-container {
+      background: var(--surface);
+      border-radius: 20px;
+      overflow-x: auto;
+    }
+
+    .table {
+      min-width: 600px;
+    }
+
+    .table thead th {
+      background: #f8fafd;
+      padding: 1.2rem;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      border: none;
+    }
+
+    .table tbody td {
+      padding: 1.2rem;
+      vertical-align: middle;
+      border-bottom: 1px solid #f1f3f7;
+    }
+
+    .btn-action {
+      background: #f1f3f7;
+      color: var(--brand-navy);
+      border: none;
+      border-radius: 10px;
+      padding: 0.5rem 1rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn-action:hover {
+      background: var(--brand-navy);
+      color: white;
+    }
+
+    /* Panel Lateral (Offcanvas) */
+    .offcanvas-custom {
+      width: 700px !important;
+      border-left: none;
+      box-shadow: -10px 0 40px rgba(0,0,0,0.1);
+      background: #f8fafd;
+    }
+
+    .detail-section {
+      background: white;
+      border-radius: 16px;
+      padding: 0.8rem;
+      margin-bottom: 0.8rem;
+      border: 1px solid rgba(0,0,0,0.03);
+    }
+
+    .detail-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .detail-value {
+      font-weight: 600;
+      color: var(--brand-navy);
+      font-size: 1rem;
+    }
+
+    /* Modal de Éxito PDF */
+    .modal-success-pdf {
+      border-radius: 30px;
+      border: none;
+    }
+
+    .btn-primary-custom {
+      background: var(--brand-navy);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 1rem;
+      font-weight: 700;
+      width: 100%;
+    }
+
+    #btn-use-written:hover {
+      border-color: #2196f3 !important;
+      background-color: #e3f2fd !important;
+      transform: scale(1.02);
+    }
+    #btn-use-numeric:hover {
+      border-color: #4caf50 !important;
+      background-color: #e8f5e9 !important;
+      transform: scale(1.02);
+    }
+    [contenteditable="true"] {
+      border: 1px dashed #0055ff !important;
+      background-color: #fff9e6 !important;
+      cursor: text;
+    }
+
+    .editing-mode .editable-field {
+      border: 1px solid #ced4da !important;
+      background-color: #ffffff !important;
+      padding: 6px 10px;
+      border-radius: 8px;
+      display: block;
+      width: 100%;
+      min-height: 34px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+      transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+      cursor: text;
+    }
+    .editing-mode .editable-field:focus {
+      border-color: var(--brand-accent) !important;
+      outline: 0;
+      box-shadow: 0 0 0 0.25rem rgba(0, 85, 255, 0.25) !important;
+    }
+
+
+    /* Menú móvil tipo Navbar */
+    .mobile-navbar {
+    display: none;
+    background: var(--surface);
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .mobile-navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    }
+
+    .mobile-navbar-brand i {
+    font-size: 1.5rem;
+    color: var(--brand-navy);
+    }
+
+    .mobile-navbar-brand span {
+    font-weight: 700;
+    color: var(--brand-navy);
+    font-size: 1.1rem;
+    }
+
+    .mobile-menu-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--brand-navy);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: all 0.2s;
+    }
+
+    .mobile-menu-btn:hover {
+    background: rgba(0,34,102,0.05);
+    }
+
+    /* Menú desplegable móvil */
+    .mobile-dropdown-menu {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    padding: 0.5rem;
+    z-index: 99;
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    }
+
+    .mobile-dropdown-menu.show {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+    }
+
+    .mobile-dropdown-menu .nav-pill-custom {
+    margin-bottom: 0.25rem;
+    width: 100%;
+    text-align: left;
+    }
+
+    .mobile-dropdown-menu .border-top {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    }
+
+
+    /* AJUSTES RESPONSIVE */
+    @media (max-width: 992px) {
+    body {
+        overflow-y: auto;
+        height: auto;
+    }
+    
+    /* Ocultar sidebar normal en móvil */
+    .sidebar {
+        display: none !important;
+    }
+    
+    /* Mostrar navbar móvil */
+    .mobile-navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    /* Ajustar el main content para móvil */
+    .main-content {
+        padding: 1rem;
+    }
+    
+    /* Ajustes de tabla en móvil */
+    .table-container {
+        overflow-x: auto;
+    }
+    
+    .search-box {
+        flex-direction: column;
+    }
+    
+    .search-box > div,
+    .search-box button {
+        width: 100% !important;
+    }
+    
+    /* Ajustar offcanvas en móvil */
+    .offcanvas-custom {
+        width: 100% !important;
+    }
+    }
+    
+    @media (max-width: 600px) {
+      .offcanvas-custom {
+        width: 100% !important;
+      }
+    }
+
+    .pagination .page-link {
+      border: none;
+      color: var(--brand-navy);
+      border-radius: 8px;
+      margin: 0 3px;
+      font-weight: 600;
+    }
+    .pagination .page-item.active .page-link {
+      background-color: var(--brand-navy);
+      color: white;
+    }
+
+    .btn-sheet {
+      background-color: #1d8548;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .btn-sheet:hover {
+      background-color: #156536;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(29, 133, 72, 0.3);
+    }
+
+    /* ===================== MÓDULO CANDIDATOS: estilos ===================== */
+    .badge-pendiente{background:#fff4e5;color:#b26a00;border:1px solid #ffcc80;}
+    .badge-impreso{background:#e8f5e9;color:#1b5e20;border:1px solid #a5d6a7;}
+
+    #print-area{display:none;}
+
+    .ficha-bautizo{
+      width:100%;
+      border:2px solid #000;
+      padding:14px 18px;
+      box-sizing:border-box;
+      font-family:'Georgia', 'Times New Roman', serif;
+      font-size:12px;
+      color:#000;
+      background:#fff;
+    }
+    .ficha-bautizo .ficha-header{
+      display:flex; justify-content:space-between; align-items:baseline;
+      font-weight:700; font-style:italic; font-size:13px; margin-bottom:10px;
+    }
+    .ficha-bautizo .ficha-titulo{
+      text-align:center; font-weight:700; font-style:italic; text-decoration:underline;
+      font-size:13.5px; margin-bottom:14px;
+    }
+    .ficha-bautizo .ficha-fila{
+      display:flex; margin-bottom:9px; line-height:1.3;
+    }
+    .ficha-bautizo .ficha-label{
+      flex:0 0 240px; font-weight:600;
+    }
+    .ficha-bautizo .ficha-dospuntos{ flex:0 0 14px; }
+    .ficha-bautizo .ficha-valor{
+      flex:1; border-bottom:1px dotted transparent;
+    }
+    .ficha-bautizo .ficha-footer{
+      display:flex; justify-content:space-between; margin-top:8px;
+    }
+    .ficha-bautizo .ficha-firma{
+      text-align:center; margin-top:34px;
+    }
+    .ficha-bautizo .ficha-firma .linea{ border-top:1px solid #000; width:260px; margin:0 auto 4px; }
+
+    @media print{
+      body *{ visibility:hidden; }
+      #print-area, #print-area *{ visibility:visible; }
+      #print-area{
+        display:block; position:absolute; top:0; left:0; width:100%;
+      }
+      .hoja-a4{
+        width:210mm; min-height:297mm; margin:0 auto; padding:10mm;
+        box-sizing:border-box; display:flex; flex-direction:column; justify-content:space-between;
+        page-break-after:always;
+      }
+      .hoja-a4:last-child{ page-break-after:auto; }
+      .hoja-a4 .ficha-bautizo{ height:135mm; }
+    }
+    
+  </style>
+</head>
+<body>
+
+    <!-- ==================== DASHBOARD PRINCIPAL ==================== -->
+  <div id="app-screen" style="display: flex; flex-direction: column; height: 100vh;">
+    
+    <!-- ===== NUEVO: NAVBAR PARA MÓVIL ===== -->
+    <div class="mobile-navbar">
+      <div class="mobile-navbar-brand">
+        <i class="fas fa-church"></i>
+        <span>SICA</span>
+      </div>
+      <button class="mobile-menu-btn" id="mobile-menu-toggle" onclick="toggleMobileMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+
+    <!-- Menú desplegable para móvil -->
+    <div class="mobile-dropdown-menu" id="mobile-dropdown-menu">
+      <a href="portal.html" class="nav-pill-custom d-flex align-items-center" style="text-decoration:none;">
+        <i class="fas fa-arrow-left me-2"></i> Volver al Portal
+      </a>
+      <button class="nav-pill-custom active" onclick="setModulo('bautismo'); closeMobileMenu();" id="mobile-btn-bautismo">
+        <i class="fas fa-dove me-2"></i> Bautismos
+      </button>
+      <button class="nav-pill-custom" onclick="setModulo('confirmacion'); closeMobileMenu();" id="mobile-btn-confirmacion">
+        <i class="fas fa-fire me-2"></i> Confirmación
+      </button>
+      <button class="nav-pill-custom" onclick="setModulo('candidatos'); closeMobileMenu();" id="mobile-btn-candidatos">
+        <i class="fas fa-baby me-2"></i> Lista de Bautizos
+      </button>
+      <button class="nav-pill-custom" onclick="abrirModalSacerdotes(); closeMobileMenu();" id="mobile-btn-sacerdotes">
+        <i class="fas fa-user-tie me-2"></i> Sacerdotes
+      </button>
+      <div class="border-top my-2"></div>
+      <button class="nav-pill-custom" onclick="cambiarPestaña('tab-historial'); cargarHistorial(); closeMobileMenu();" id="mobile-btn-historial">
+        <i class="fas fa-history me-2"></i> Ver Historial
+      </button>
+      <div class="border-top my-2"></div>
+      <div class="px-2 py-2">
+        <div class="d-flex align-items-center mb-2">
+          <div class="rounded-circle bg-light p-2 me-2">
+            <i class="fas fa-user text-muted"></i>
+          </div>
+          <span class="small fw-bold" id="mobile-user-label">Admin</span>
+        </div>
+        <button onclick="cerrarSesion()" class="btn btn-sm btn-outline-danger w-100 rounded-pill">
+          <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
+        </button>
+      </div>
+    </div>
+
+    <!-- Contenedor flexible para sidebar y contenido -->
+    <div style="display: flex; flex: 1; overflow: hidden;">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="main-sidebar">
+        <div class="sidebar-toggle-btn" id="sidebar-toggle" onclick="toggleSidebar()">
+          <i class="fas fa-chevron-left"></i>
+        </div>
+        
+        <div class="mb-5 px-2 sidebar-title">
+          <h4 class="fw-bold text-parroquia"><i class="fas fa-church me-2"></i><span>SICA</span></h4>
+          <small class="text-muted fw-semibold sidebar-text">Sistema de Archivo</small>
+        </div>
+
+        <a href="portal.html" class="nav-pill-custom d-flex align-items-center" style="text-decoration:none;">
+          <i class="fas fa-arrow-left me-2"></i><span class="sidebar-text">Volver al Portal</span>
+        </a>
+
+        <button class="nav-pill-custom active" onclick="setModulo('bautismo')" id="btn-mod-bautismo">
+          <i class="fas fa-dove me-2"></i><span class="sidebar-text">Bautismos</span>
+        </button>
+        <button class="nav-pill-custom" onclick="setModulo('confirmacion')" id="btn-mod-confirmacion">
+          <i class="fas fa-fire me-2"></i><span class="sidebar-text">Confirmación</span>
+        </button>
+
+        <button class="nav-pill-custom" onclick="setModulo('candidatos')" id="btn-mod-candidatos">
+          <i class="fas fa-baby me-2"></i><span class="sidebar-text">Lista de Bautizos</span>
+        </button>
+
+        <button class="nav-pill-custom" onclick="abrirModalSacerdotes()" id="btn-mod-sacerdotes">
+          <i class="fas fa-user-tie me-2"></i><span class="sidebar-text">Sacerdotes</span>
+        </button>
+
+        <div class="mt-4 pt-4 border-top">
+            <button class="nav-pill-custom w-100" onclick="cambiarPestaña('tab-historial'); cargarHistorial()" id="btn-tab-historial">
+              <i class="fas fa-history me-2"></i><span class="sidebar-text">Ver Historial</span>
+            </button>
+        </div>
+        
+        <div class="mt-auto pt-4 border-top">
+          <div class="d-flex align-items-center mb-3">
+            <div class="rounded-circle bg-light p-2 me-2">
+              <i class="fas fa-user text-muted"></i>
+            </div>
+            <span class="small fw-bold sidebar-user-text" id="nav-user-label">Admin</span>
+          </div>
+          <button onclick="cerrarSesion()" class="btn btn-sm btn-outline-danger w-100 rounded-pill">
+            <i class="fas fa-sign-out-alt me-1"></i><span class="sidebar-text">Cerrar Sesión</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <main class="main-content">
+        <div id="tab-busqueda" class="vista-app">
+          <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <h2 class="fw-bold m-0" id="main-title">Partidas de Bautismo</h2>
+            <a href="#" id="btn-open-gsheet" target="_blank" class="btn-sheet shadow-sm">
+              <i class="fas fa-file-excel"></i> <span class="d-none d-md-inline">Abrir Documento Original</span>
+            </a>
+          </div>
+          
+          <!-- Caja de Búsqueda -->
+          <div class="search-box glass-card">
+            <div class="flex-grow-1">
+              <label class="detail-label">Nombre, Padres o ID del titular</label>
+              <input type="text" id="search-input" class="form-control form-control-custom" placeholder="Ej: Juan Perez o B54-0001">
+            </div>
+            <div style="width: 150px;">
+              <label class="detail-label">Año</label>
+              <input type="number" id="year-filter" class="form-control form-control-custom" placeholder="2020">
+            </div>
+            <button onclick="ejecutarBusqueda()" class="btn btn-primary-custom px-4" style="width: auto;">Buscar</button>
+          </div>
+
+          <!-- Tabla -->
+          <div id="loading-indicator" class="text-center py-5 d-none">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-3 fw-semibold text-muted">Consultando archivos...</p>
+          </div>
+
+          <div id="table-container" class="table-container shadow-sm d-none">
+            <table class="table mb-0 table-hover">
+              <thead id="table-head"></thead>
+              <tbody id="results-body"></tbody>
+            </table>
+          </div>
+          <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3 px-3 pb-3">
+            <small class="text-muted fw-semibold mb-2 mb-md-0" id="pagination-info">Mostrando 0 de 0 registros</small>
+            <nav>
+              <ul class="pagination pagination-sm mb-0" id="pagination-controls"></ul>
+            </nav>
+          </div>
+        </div>
+
+        <div id="tab-historial" class="vista-app d-none">
+          <h2 class="fw-bold mb-4">Certificados Emitidos</h2>
+          
+          <div class="d-flex gap-2 mb-4">
+              <button class="btn btn-sm btn-outline-primary active px-4 rounded-pill fw-bold" id="btn-hist-bau" onclick="setHistorialSource('bautismo')">
+                  <i class="fas fa-dove me-1"></i> Historial Bautismos
+              </button>
+              <button class="btn btn-sm btn-outline-primary px-4 rounded-pill fw-bold" id="btn-hist-conf" onclick="setHistorialSource('confirmacion')">
+                  <i class="fas fa-fire me-1"></i> Historial Confirmaciones
+              </button>
+          </div>
+
+          <div class="table-container shadow-sm p-4">
+            <table class="table table-hover">
+              <thead>
+                <tr><th>Fecha</th><th>Titular</th><th>Emitido por</th><th>Documento</th></tr>
+              </thead>
+              <tbody id="historial-body"></tbody>
+            </table>
+            <div id="historial-loading" class="text-center py-4 d-none"><div class="spinner-border text-primary"></div></div>
+            
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3 border-top pt-3">
+              <small class="text-muted fw-semibold" id="hist-pagination-info">Mostrando registros</small>
+              <nav>
+                <ul class="pagination pagination-sm mb-0" id="hist-pagination-controls"></ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================== MÓDULO CANDIDATOS: vista ===================== -->
+        <div id="tab-candidatos" class="vista-app d-none">
+          <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <h2 class="fw-bold m-0">Lista de Bautizos <small class="text-muted fw-semibold" style="font-size:.9rem;">(en preparación)</small></h2>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <div class="flex-grow-1" style="max-width:420px;">
+              <input type="text" id="cand-search-input" class="form-control form-control-custom"
+                     placeholder="Buscar candidato por nombre o padres...">
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-action" onclick="abrirFormCandidato()">
+                <i class="fas fa-user-plus me-1"></i> Nuevo candidato
+              </button>
+              <button class="btn btn-primary-custom" style="width:auto;" onclick="imprimirSeleccionados()">
+                <i class="fas fa-print me-1"></i> Imprimir seleccionados (<span id="cand-count-sel">0</span>)
+              </button>
+            </div>
+          </div>
+
+          <!-- Tabla -->
+          <div id="cand-loading-indicator" class="text-center py-5 d-none">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-3 fw-semibold text-muted">Consultando archivos...</p>
+          </div>
+
+          <div id="cand-table-container" class="table-container shadow-sm d-none">
+            <table class="table table-hover mb-0">
+              <thead>
+                <tr>
+                  <th style="width:36px;"><input type="checkbox" id="cand-check-all" onclick="toggleTodos(this)"></th>
+                  <th>ID</th><th>Bautizado</th><th>Fecha prog.</th><th>Padres</th><th>Estado</th><th>Acción</th>
+                </tr>
+              </thead>
+              <tbody id="cand-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ==================== PANEL LATERAL (OFFCANVAS) ==================== -->
+  <div class="offcanvas offcanvas-end offcanvas-custom" tabindex="-1" id="panelDetalle">
+    <div class="offcanvas-header bg-white border-bottom p-4">
+      <h5 class="offcanvas-title fw-bold text-parroquia" id="mod-head-nombre">Registros</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body p-3">
+  
+      <div class="d-flex gap-2 mb-2">
+        <div class="detail-section flex-grow-1 text-center py-1">
+          <div class="detail-label">Libro</div>
+          <div class="detail-value fs-6" id="det-libro"></div>
+        </div>
+        <div class="detail-section flex-grow-1 text-center py-1">
+          <div class="detail-label">Foja</div>
+          <div class="detail-value fs-6" id="det-foja"></div>
+        </div>
+        <div class="detail-section flex-grow-1 text-center py-1">
+          <div class="detail-label">Partida</div>
+          <div class="detail-value fs-6 text-danger" id="det-num"></div>
+        </div>
+      </div>
+    
+      <div class="row g-2 mb-2">
+        <div class="col-6">
+          <div class="detail-section h-100 mb-0">
+            <div class="detail-label">Nombres</div>
+            <div class="detail-value fs-6 editable-field" id="det-nombres"></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="detail-section h-100 mb-0">
+            <div class="detail-label">Apellidos</div>
+            <div class="detail-value fs-6 editable-field" id="det-apellidos"></div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="row g-2 mb-2">
+        <div class="col-6">
+          <div class="detail-section h-100 mb-0">
+            <div class="detail-label">Padre</div>
+            <div class="detail-value small editable-field" id="det-padre"></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="detail-section h-100 mb-0">
+            <div class="detail-label">Madre</div>
+            <div class="detail-value small editable-field" id="det-madre"></div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="detail-section mb-2">
+        <div class="detail-label">Lugar de Nacimiento:</div>
+        <div class="detail-value small editable-field" id="det-lugar-nac"></div>
+        <div class="d-flex gap-2 border-top mt-1 pt-1">
+          <div class="flex-fill" style="min-width:0;">
+            <span class="text-muted d-block" style="font-size:0.65rem;">Fecha Numérica</span>
+            <span class="editable-field text-dark fw-medium small" id="det-fecha-nac"></span>
+          </div>
+          <div class="flex-fill" style="min-width:0;">
+            <span class="text-muted fst-italic d-block" style="font-size:0.65rem;">Fecha Escrita</span>
+            <span class="editable-field text-dark fw-medium small" id="det-fecha-nac-literal"></span>
+          </div>
+        </div>
+      </div>
+    
+      <div class="detail-section mb-2" style="background: #e9effd; border-color: var(--brand-accent)">
+        <div class="detail-label text-accent">Datos del Bautismo</div>
+        <div class="detail-value small editable-field" id="det-lugar-bau"></div>
+        <div class="d-flex gap-2 border-top border-primary-subtle mt-1 pt-1">
+          <div class="flex-fill" style="min-width:0;">
+            <span class="text-primary fw-bold d-block" style="font-size:0.65rem;">Fecha Numérica</span>
+            <span class="editable-field small" id="det-fecha-bau"></span>
+          </div>
+          <div class="flex-fill" style="min-width:0;">
+            <span class="text-primary fst-italic d-block" style="font-size:0.65rem;">Fecha Escrita</span>
+            <span class="editable-field small" id="det-fecha-bau-literal"></span>
+          </div>
+        </div>
+      </div>
+    
+      <div id="section-confirmacion-panel" class="d-none">
+        <div class="detail-section mb-2" style="background: #fff4e5; border-color: #ff9800">
+          <div class="detail-label text-warning text-dark">Datos de la Confirmación</div>
+          <div class="detail-value small editable-field" id="det-lugar-conf"></div>
+          <div class="d-flex gap-2 border-top border-warning-subtle mt-1 pt-1">
+            <div class="flex-fill" style="min-width:0;">
+              <span class="text-dark fw-bold d-block" style="font-size:0.65rem;">Fecha Numérica</span>
+              <span class="editable-field small" id="det-fecha-conf"></span>
+            </div>
+            <div class="flex-fill" style="min-width:0;">
+              <span class="text-muted fst-italic d-block" style="font-size:0.65rem;">Fecha Escrita</span>
+              <span class="editable-field text-dark fw-medium small" id="det-fecha-conf-literal"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="detail-section mb-2">
+        <div class="detail-label">Ministro del Sacramento</div>
+        <div class="detail-value small editable-field" id="det-ministro"></div>
+      </div>
+    
+      <div class="row g-2 mb-2">
+        <div class="col-6">
+          <div class="detail-section h-100 mb-0">
+            <div class="detail-label">Padrino</div>
+            <div class="detail-value small editable-field" id="det-padrino"></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="detail-section h-100 mb-0">
+            <div class="detail-label">Madrina</div>
+            <div class="detail-value small editable-field" id="det-madrina"></div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="detail-section mb-2">
+        <div class="detail-label">Notas Marginales</div>
+        <textarea id="box-notas-margen" class="form-control border-0 bg-light mt-1" style="font-size: 0.8rem; resize: none;" rows="2" readonly></textarea>
+      </div>
+    
+      <div class="detail-section mb-2">
+        <div class="detail-label">Anotaciones Extra</div>
+        <textarea id="box-anotaciones" class="form-control border-0 bg-light mt-1" style="font-size: 0.8rem; resize: none;" rows="2" readonly></textarea>
+      </div>
+    
+      <button id="btn-generate-pdf" class="btn btn-primary-custom shadow-lg mt-2 py-2" onclick="validarFechasYGenerar()">
+        <i class="fas fa-print me-2"></i> Generar Certificado
+      </button>
+    
+      <div class="mt-3 border-top pt-3">
+        <button class="btn btn-outline-secondary w-100 mb-2 fw-bold" onclick="habilitarEdicion()" id="btn-edit-record">
+          <i class="fas fa-edit me-2"></i> Habilitar Edición
+        </button>
+        <div id="edit-controls" class="d-none d-flex gap-2 mb-2">
+          <button class="btn btn-success flex-grow-1 fw-bold" onclick="guardarCambiosEdicion()" id="btn-save-edit">
+            <i class="fas fa-save me-1"></i> Guardar
+          </button>
+          <button class="btn btn-light border fw-bold" onclick="cancelarEdicion()">Cancelar</button>
+        </div>
+      </div>
+    </div>   
+  </div>
+
+  <!-- ===================== MÓDULO CANDIDATOS: modal del formulario ===================== -->
+  <div class="modal fade" id="panelCandidato" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width:clamp(320px, 92vw, 760px);">
+      <div class="modal-content border-0 shadow-lg" style="border-radius:24px;">
+        <div class="modal-header border-bottom px-4 pt-4">
+          <h5 class="modal-title fw-bold" id="cand-form-titulo">Nuevo candidato</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <input type="hidden" id="cand-id">
+          <div class="mb-2"><label class="small fw-bold">Nombre del bautizado</label>
+            <input class="form-control form-control-custom" id="cand-nombre"></div>
+          <div class="row g-2 mb-2">
+            <div class="col-7"><label class="small fw-bold">Fecha bautismo prog.</label>
+              <input type="date" class="form-control form-control-custom" id="cand-fecha-bau">
+              <small class="text-muted" id="cand-dia-preview" style="font-size:.7rem;"></small></div>
+            <div class="col-5"><label class="small fw-bold">Hora</label>
+              <input type="text" class="form-control form-control-custom" id="cand-hora" placeholder="4:00 p. m."></div>
+          </div>
+          <div class="mb-2"><label class="small fw-bold">Ministro del bautismo</label>
+            <input class="form-control form-control-custom" id="cand-ministro"></div>
+          <div class="row g-2 mb-2">
+            <div class="col-8"><label class="small fw-bold">Lugar de nacimiento</label>
+              <input class="form-control form-control-custom" id="cand-lugar-nac"></div>
+            <div class="col-4"><label class="small fw-bold">Fecha nac.</label>
+              <input type="date" class="form-control form-control-custom" id="cand-fecha-nac"></div>
+          </div>
+          <div class="row g-2 mb-2">
+            <div class="col-7"><label class="small fw-bold">Nombre del padre</label>
+              <input class="form-control form-control-custom" id="cand-padre"></div>
+            <div class="col-5"><label class="small fw-bold">Lugar nac. padre</label>
+              <input class="form-control form-control-custom" id="cand-lugar-padre"></div>
+          </div>
+          <div class="row g-2 mb-2">
+            <div class="col-7"><label class="small fw-bold">Nombre de la madre</label>
+              <input class="form-control form-control-custom" id="cand-madre"></div>
+            <div class="col-5"><label class="small fw-bold">Lugar nac. madre</label>
+              <input class="form-control form-control-custom" id="cand-lugar-madre"></div>
+          </div>
+          <div class="row g-2 mb-2">
+            <div class="col-6"><label class="small fw-bold">Padrino</label>
+              <input class="form-control form-control-custom" id="cand-padrino"></div>
+            <div class="col-6"><label class="small fw-bold">Madrina</label>
+              <input class="form-control form-control-custom" id="cand-madrina"></div>
+          </div>
+          <div class="mb-2"><label class="small fw-bold">Dirección</label>
+            <input class="form-control form-control-custom" id="cand-direccion"></div>
+          <div class="mb-3"><label class="small fw-bold">Celular(es)</label>
+            <input class="form-control form-control-custom" id="cand-celular" placeholder="972672087 - 920020021"></div>
+          <button class="btn btn-primary-custom w-100" id="btn-guardar-candidato" onclick="guardarCandidato()">
+            <i class="fas fa-save me-1"></i> Guardar candidato
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALES -->
+  <div class="modal fade" id="successPdfModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal-success-pdf p-4 text-center border-0 shadow-lg">
+        <div class="mb-4">
+          <div class="rounded-circle bg-success bg-opacity-10 d-inline-flex p-4 mb-3">
+            <i class="fas fa-check-circle fa-4x text-success"></i>
+          </div>
+          <h3 class="fw-bold">Certificado Generado</h3>
+          <p class="text-muted">El documento ha sido procesado y guardado en el archivo digital.</p>
+        </div>
+        <div class="d-grid gap-2">
+          <a href="#" id="btn-open-pdf" target="_blank" class="btn btn-primary-custom py-3">
+            <i class="fas fa-external-link-alt me-2"></i>Abrir para Imprimir
+          </a>
+          <button class="btn btn-light rounded-4 py-2 fw-bold" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="conflictModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 28px; overflow: hidden;">
+        <div class="p-4 text-center" style="background-color: #fef9e7;">
+          <div class="rounded-circle bg-warning d-inline-flex align-items-center justify-content-center shadow-sm" style="width: 60px; height: 60px;">
+            <i class="fas fa-question text-white fa-2x"></i>
+          </div>
+          <h4 class="fw-bold mt-3 mb-1" style="color: #856404;">¿Cómo desea imprimir la fecha?</h4>
+          <p class="text-muted small mb-0" id="conflict-instruction">Elija la opción que debe aparecer en el certificado.</p>
+        </div>
+  
+        <div class="modal-body p-4">
+          <div class="d-grid gap-3">
+            <button class="btn py-3 px-4 text-start d-flex align-items-center justify-content-between shadow-sm" 
+                    id="btn-use-written" 
+                    style="border-radius: 18px; border: 2px solid #e3f2fd; background-color: #f0f7ff; transition: all 0.2s;">
+              <div style="flex: 1;">
+                <small class="d-block fw-bold text-primary text-uppercase mb-1" style="font-size: 0.7rem;">OPCIÓN A: USAR EL TEXTO ESCRITO</small>
+                <span class="fs-6 fw-bold text-dark" id="txt-written-preview" style="line-height: 1.2;">...</span>
+              </div>
+              <div class="ms-3 bg-primary bg-opacity-10 p-2 rounded-circle">
+                <i class="fas fa-pen-nib text-primary"></i>
+              </div>
+            </button>
+  
+            <button class="btn py-3 px-4 text-start d-flex align-items-center justify-content-between shadow-sm" 
+                    id="btn-use-numeric" 
+                    style="border-radius: 18px; border: 2px solid #e8f5e9; background-color: #f1fcf2; transition: all 0.2s;">
+              <div style="flex: 1;">
+                <small class="d-block fw-bold text-success text-uppercase mb-1" style="font-size: 0.7rem;">OPCIÓN B: USAR FECHA DEL SISTEMA</small>
+                <span class="fs-6 fw-bold text-dark" id="txt-numeric-preview" style="line-height: 1.2;">...</span>
+              </div>
+              <div class="ms-3 bg-success bg-opacity-10 p-2 rounded-circle">
+                <i class="fas fa-calendar-check text-success"></i>
+              </div>
+            </button>
+          </div>
+  
+          <div class="text-center mt-4">
+            <button class="btn btn-link text-muted text-decoration-none small fw-bold" id="btn-cancel-conflict">
+               No imprimir nada todavía (Cerrar)
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal fade" id="updateSuccessModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content p-4 text-center border-0 shadow-lg" style="border-radius: 24px;">
+        <div class="mb-3">
+          <div class="rounded-circle bg-success bg-opacity-10 d-inline-flex p-3 mb-2">
+            <i class="fas fa-check-circle fa-3x text-success"></i>
+          </div>
+          <h4 class="fw-bold">¡Actualizado!</h4>
+          <p class="text-muted small">El registro se modificó correctamente en la base de datos.</p>
+        </div>
+        <button class="btn btn-light rounded-pill py-2 fw-bold w-100 border" data-bs-dismiss="modal">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <input type="hidden" id="input-sacerdote-activo" value="">
+
+  <div class="modal fade" id="modalSacerdotes" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 24px;">
+        <div class="modal-header border-0 pb-0 mt-3 px-4">
+          <h5 class="fw-bold text-parroquia"><i class="fas fa-user-tie text-primary me-2"></i>Sacerdotes</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="input-group mb-4 shadow-sm" style="border-radius: 12px; overflow: hidden;">
+            <input type="text" id="nuevo-sacerdote" class="form-control border-0 bg-light px-3" placeholder="Ej: Pbro. Juan Pérez">
+            <button class="btn btn-primary-custom px-4" style="border-radius: 0; width: auto;" onclick="agregarSacerdote()" id="btn-add-sac">Agregar</button>
+          </div>
+          <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+            <table class="table table-hover align-middle mb-0">
+              <tbody id="lista-sacerdotes"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== MÓDULO CANDIDATOS: hoja de impresión (2 fichas por A4) ===================== -->
+  <div id="print-area"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const API_BAUTISMO = "https://script.google.com/macros/s/AKfycbyiFao36Cgrfe7IHyevzx81euc_yK17-6BAjxIP1XJ7cIEZ0U_3lcM4Zfx2xB9aPqNrUA/exec"; 
+    const API_CONFIRMACION = "https://script.google.com/macros/s/AKfycbyLw_K3TYBvsSPrlQFG2HdH9pJWgcO9zmSNggyPOjvNvh2Jb_izrCZ3DzXgTvFFBv1C/exec"; 
+    const SHEET_BAUTISMO = "https://docs.google.com/spreadsheets/d/1KQBNB5D7y47LohUwpOIOYOWUQ3YUlUVnCSnhiH1u8-Y/edit";
+    const SHEET_CONFIRMACION = "https://docs.google.com/spreadsheets/d/1o-VH1zesx4HnEXqtgaA3OS9IP2OEm3OEIgDSryCRRtw/edit";
+    const NOMBRE_PARROQUIA = 'COMUNIDAD PARROQUIAL "SAN PEDRO APÓSTOL"- TACNA';
+
+    let API_URL = API_BAUTISMO;
+    let moduloActual = 'bautismo';
+    let datosActuales = [];
+    let paginaActual = 1;
+    const filasPorPagina = 10;
+    
+    let modalConflicto; 
+    let sidebarDetalle;
+    let modalExito;
+    let registroSeleccionado = null; 
+    
+    let fuenteHistorialActual = 'bautismo';
+    let paginaHistorialActual = 1;
+    const filasPorPaginaHistorial = 20;
+    let datosHistorialCrudos = [];
+
+    let modalSacerdotes;
+
+    // Módulo Candidatos
+    let panelCandidato;
+    let candidatos = [];
+
+    // Función para colapsar/expandir sidebar
+    function toggleSidebar() {
+      const sidebar = document.getElementById('main-sidebar');
+      sidebar.classList.toggle('collapsed');
+      
+      // Guardar estado en localStorage
+      const isCollapsed = sidebar.classList.contains('collapsed');
+      localStorage.setItem('sidebarCollapsed', isCollapsed);
+    }
+    // Funciones para el menú móvil
+    function toggleMobileMenu() {
+    const menu = document.getElementById('mobile-dropdown-menu');
+    menu.classList.toggle('show');
+    
+    // Cambiar ícono del botón
+    const btnIcon = document.querySelector('#mobile-menu-toggle i');
+    if (menu.classList.contains('show')) {
+        btnIcon.classList.remove('fa-bars');
+        btnIcon.classList.add('fa-times');
+    } else {
+        btnIcon.classList.remove('fa-times');
+        btnIcon.classList.add('fa-bars');
+    }
+    }
+
+    function closeMobileMenu() {
+    const menu = document.getElementById('mobile-dropdown-menu');
+    menu.classList.remove('show');
+    const btnIcon = document.querySelector('#mobile-menu-toggle i');
+    btnIcon.classList.remove('fa-times');
+    btnIcon.classList.add('fa-bars');
+    }
+
+    // Cerrar menú al hacer clic fuera (opcional, pero mejora UX)
+    document.addEventListener('click', function(event) {
+    const menu = document.getElementById('mobile-dropdown-menu');
+    const toggleBtn = document.getElementById('mobile-menu-toggle');
+    
+    if (menu && menu.classList.contains('show')) {
+        if (!menu.contains(event.target) && !toggleBtn.contains(event.target)) {
+        closeMobileMenu();
+        }
+    }
+    });
+
+    // Función para manejar el menú móvil
+    function handleMobileMenuChange(value) {
+      switch(value) {
+        case 'bautismo':
+          setModulo('bautismo');
+          break;
+        case 'confirmacion':
+          setModulo('confirmacion');
+          break;
+        case 'sacerdotes':
+          abrirModalSacerdotes();
+          // Resetear el select después de abrir modal
+          setTimeout(() => {
+            const select = document.getElementById('mobile-menu-select');
+            if (select) select.value = moduloActual === 'bautismo' ? 'bautismo' : 'confirmacion';
+          }, 100);
+          break;
+        case 'historial':
+          cambiarPestaña('tab-historial');
+          cargarHistorial();
+          break;
+        case 'cerrar':
+          cerrarSesion();
+          break;
+      }
+    }
+
+    function setModulo(mod) {
+      moduloActual = mod;
+
+      // Actualiza estado visual de los botones (sidebar + móvil)
+      document.getElementById('btn-mod-bautismo').classList.toggle('active', mod === 'bautismo');
+      document.getElementById('btn-mod-confirmacion').classList.toggle('active', mod === 'confirmacion');
+      document.getElementById('btn-mod-candidatos').classList.toggle('active', mod === 'candidatos');
+      document.getElementById('mobile-btn-bautismo').classList.toggle('active', mod === 'bautismo');
+      document.getElementById('mobile-btn-confirmacion').classList.toggle('active', mod === 'confirmacion');
+      document.getElementById('mobile-btn-candidatos').classList.toggle('active', mod === 'candidatos');
+
+      if (mod === 'candidatos') {
+        cambiarPestaña('tab-candidatos');
+        cargarCandidatos();
+        return; // no toca API_URL de bautismo/confirmación ni hace búsqueda
+      }
+
+      API_URL = (mod === 'bautismo') ? API_BAUTISMO : API_CONFIRMACION;
+      document.getElementById('btn-open-gsheet').href = (mod === 'bautismo') ? SHEET_BAUTISMO : SHEET_CONFIRMACION;
+      document.getElementById('search-input').value = "";
+      document.getElementById('year-filter').value = "";
+      document.getElementById('main-title').innerText = (mod === 'bautismo') ? "Registros de Bautismo" : "Registros de Confirmación";
+      cambiarPestaña('tab-busqueda');
+      realizarPeticionBusqueda("", "");
+    }
+
+    function mostrarResultados(res) {
+      const thead = document.getElementById('table-head');
+      const tbody = document.getElementById('results-body');
+      
+      let headerHTML = `<tr>
+        <th>ID</th>
+        <th>Libro / Foja / Partida</th>
+        <th>Nombre Completo</th>`;
+      
+      if(moduloActual === 'confirmacion') {
+        headerHTML += `<th>Catequesis</th>`;
+      }
+      
+      headerHTML += `<th>Fecha ${moduloActual === 'confirmacion' ? 'Confirma.' : 'Bautizo'}</th>
+        <th>Acción</th>
+       </tr>`;
+      
+      thead.innerHTML = headerHTML;
+
+      if (res) {
+        datosActuales = (res || []).map(item => ({ ...item, libro: item.nro_libro }));
+        paginaActual = 1;
+      }
+
+      tbody.innerHTML = '';
+      if (datosActuales.length === 0) {
+        document.getElementById('table-container').classList.add('d-none');
+        return;
+      }
+      document.getElementById('table-container').classList.remove('d-none');
+
+      const inicio = (paginaActual - 1) * filasPorPagina;
+      const fin = inicio + filasPorPagina;
+      const datosPaginados = datosActuales.slice(inicio, fin);
+
+      datosPaginados.forEach((f, i) => {
+        const indiceReal = inicio + i;
+        
+        // UX/UI: Creamos un badge sutil y moderno solo si hay un estado escrito en el Sheets
+        let badgeEstado = "";
+        if (f.estado && f.estado.toString().trim() !== "") {
+          badgeEstado = `<span class="badge bg-warning bg-opacity-10 text-warning-emphasis border border-warning-subtle mt-1 d-inline-block" style="font-size: 0.65rem; letter-spacing: 0.5px;">${f.estado.toUpperCase()}</span>`;
+        }
+
+        let rowHTML = `<tr>
+          <td class="align-middle">
+            <span class="fw-bold text-primary small d-block">${f.id}</span>
+            ${badgeEstado}
+          </td>
+          <td class="align-middle"><span class="badge bg-light text-dark border p-2">L:${f.libro} F:${f.foja} P:${f.numero}</span></td>
+          <td class="align-middle">
+            <span class="fw-semibold d-block text-dark" style="font-size:0.9rem;">${(f.nombre_completo || "").toUpperCase()}</span>
+            <small class="text-muted" style="font-size: 0.70rem;">
+               <i class="fas fa-users me-1 opacity-50"></i> ${(f.padre || "-").toUpperCase()} y ${(f.madre || "-").toUpperCase()}
+            </small>
+           </td>`;
+
+        if(moduloActual === 'confirmacion') {
+          rowHTML += `<td class="align-middle small fw-bold text-success">${f.catequesis || "-"}</td>`;
+        }
+
+        rowHTML += `<td class="text-muted small align-middle">${f.fecha_confirmacion || f.fecha_bautizo || "-"}</td>
+          <td class="align-middle"><button class="btn btn-action btn-sm" onclick="abrirPanelDetalle(${indiceReal})">Ver</button></td>
+         </tr>`;
+        tbody.innerHTML += rowHTML;
+      });
+
+      renderizarPaginacion();
+    }
+    
+    function cambiarPestaña(tabId) {
+        document.querySelectorAll('.vista-app').forEach(el => el.classList.add('d-none'));
+        document.querySelectorAll('.nav-pill-custom').forEach(el => el.classList.remove('active'));
+        
+        const targetTab = document.getElementById(tabId);
+        if (targetTab) targetTab.classList.remove('d-none');
+        
+        const btnId = "btn-" + tabId;
+        const targetBtn = document.getElementById(btnId);
+        if (targetBtn) targetBtn.classList.add('active');
+    }
+
+    function mostrarApp() {
+      const usuarioLogueado = localStorage.getItem('usuarioParroquia') || "ADMIN";
+      document.getElementById('nav-user-label').innerText = usuarioLogueado.toUpperCase();
+      document.getElementById('mobile-user-label').innerText = usuarioLogueado.toUpperCase();
+      
+      // Restaurar estado del sidebar
+      const sidebar = document.getElementById('main-sidebar');
+      const savedState = localStorage.getItem('sidebarCollapsed');
+      if (savedState === 'true') {
+        sidebar.classList.add('collapsed');
+      } else {
+        sidebar.classList.remove('collapsed');
+      }
+      
+      cargarSacerdotesSilencioso();
+      setModulo('bautismo');
+    }
+
+    function cerrarSesion() { 
+      localStorage.clear(); 
+      location.href = 'index.html'; 
+    }
+
+    async function realizarPeticionBusqueda(termino, anio) {
+      document.getElementById('loading-indicator').classList.remove('d-none');
+      document.getElementById('table-container').classList.add('d-none');
+      try {
+        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ accion: 'buscar', termino, anio }) });
+        const data = await res.json();
+        mostrarResultados(data.data);
+      } catch (e) { console.error(e); }
+      document.getElementById('loading-indicator').classList.add('d-none');
+    }
+
+    function ejecutarBusqueda() {
+      const termino = document.getElementById('search-input').value.trim();
+      const anio = document.getElementById('year-filter').value.trim();
+      cambiarPestaña('tab-busqueda');
+      realizarPeticionBusqueda(termino, anio);
+    }
+
+    document.getElementById('search-input').addEventListener('keypress', (e) => { 
+      if (e.key === 'Enter') ejecutarBusqueda(); 
+    });
+    document.getElementById('year-filter').addEventListener('keypress', (e) => { 
+      if (e.key === 'Enter') ejecutarBusqueda(); 
+    });
+
+    function renderizarPaginacion() {
+      const totalPaginas = Math.ceil(datosActuales.length / filasPorPagina);
+      const container = document.getElementById('pagination-controls');
+      const info = document.getElementById('pagination-info');
+      
+      container.innerHTML = '';
+      info.innerText = `Mostrando página ${paginaActual} de ${totalPaginas} (${datosActuales.length} registros)`;
+
+      if (totalPaginas <= 1) return;
+
+      container.innerHTML += `<li class="page-item ${paginaActual === 1 ? 'disabled' : ''}">
+        <a class="page-link" href="javascript:void(0)" onclick="cambiarPagina(${paginaActual - 1})"><i class="fas fa-chevron-left"></i></a>
+      </li>`;
+
+      for (let i = 1; i <= totalPaginas; i++) {
+        container.innerHTML += `<li class="page-item ${paginaActual === i ? 'active' : ''}">
+          <a class="page-link" href="javascript:void(0)" onclick="cambiarPagina(${i})">${i}</a>
+        </li>`;
+      }
+
+      container.innerHTML += `<li class="page-item ${paginaActual === totalPaginas ? 'disabled' : ''}">
+        <a class="page-link" href="javascript:void(0)" onclick="cambiarPagina(${paginaActual + 1})"><i class="fas fa-chevron-right"></i></a>
+      </li>`;
+    }
+
+    function cambiarPagina(p) {
+      paginaActual = p;
+      mostrarResultados();
+      document.querySelector('.main-content').scrollTop = 0;
+    }
+
+    function abrirPanelDetalle(idx) {
+      registroSeleccionado = datosActuales[idx];
+      const d = registroSeleccionado;
+      document.getElementById('mod-head-nombre').innerText = d.id;
+      
+      document.getElementById('det-libro').innerText = d.libro || d.nro_libro || "";
+      document.getElementById('det-foja').innerText = d.foja || "";
+      document.getElementById('det-num').innerText = d.numero || "";
+      document.getElementById('det-nombres').innerText = (d.nombres || "").toUpperCase();
+      document.getElementById('det-apellidos').innerText = (d.apellidos || "").toUpperCase();
+      document.getElementById('det-padre').innerText = (d.padre || "").toUpperCase();
+      document.getElementById('det-madre').innerText = (d.madre || "").toUpperCase();
+      document.getElementById('det-ministro').innerText = (d.ministro || "").toUpperCase();
+      
+      document.getElementById('det-lugar-nac').innerText = d.lugar_nacimiento || "";
+      document.getElementById('det-fecha-nac').innerText = d.fecha_nacimiento || "";
+      document.getElementById('det-fecha-nac-literal').innerText = d.fecha_nac_escrito || "";
+
+      const panelConfi = document.getElementById('section-confirmacion-panel');
+      
+      if (moduloActual === 'confirmacion') {
+        panelConfi.classList.remove('d-none');
+        document.getElementById('det-lugar-conf').innerText = d.lugar_confirmacion || "";
+        document.getElementById('det-fecha-conf').innerText = d.fecha_confirmacion || "";
+        document.getElementById('det-fecha-conf-literal').innerText = d.fecha_confirmacion_escrita || "";
+        document.getElementById('det-lugar-bau').innerText = d.lugar_bautismo || "";
+        document.getElementById('det-fecha-bau').innerText = d.fecha_bau_original || "";
+        document.getElementById('det-fecha-bau-literal').innerText = d.fecha_bau_escrito_original || "";
+      } else {
+        panelConfi.classList.add('d-none');
+        document.getElementById('det-lugar-bau').innerText = d.lugar_bautizo || "";
+        document.getElementById('det-fecha-bau').innerText = d.fecha_bautizo || "";
+        document.getElementById('det-fecha-bau-literal').innerText = d.fecha_bautizo_escrito || "";
+      }
+
+      document.getElementById('det-padrino').innerText = (d.padrino || "").toUpperCase();
+      document.getElementById('det-madrina').innerText = (d.madrina || "").toUpperCase();
+      document.getElementById('box-notas-margen').value = d.nota_marginal || "";
+      document.getElementById('box-anotaciones').value = d.anotaciones || "";
+      
+      cancelarEdicion();
+      sidebarDetalle.show();
+    }
+    
+    async function enviarDatosAGoogleSheets(fechaNacFinal, fechaBauFinal, fechaConfFinal) {
+      const btn = document.getElementById("btn-generate-pdf");
+      const originalHTML = btn.innerHTML;
+    
+      btn.disabled = true;
+      btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Generando...`;
+    
+      try {
+        const pckg = { 
+           accion: 'generar_partida', 
+           datos: { 
+             id: registroSeleccionado.id,
+             nro_libro: document.getElementById('det-libro').innerText.trim(),
+             foja: document.getElementById('det-foja').innerText.trim(),
+             numero: document.getElementById('det-num').innerText.trim(),
+             nombres: document.getElementById('det-nombres').innerText.trim(),
+             apellidos: document.getElementById('det-apellidos').innerText.trim(),
+             padre: document.getElementById('det-padre').innerText.trim(),
+             madre: document.getElementById('det-madre').innerText.trim(),
+             ministro: document.getElementById('det-ministro').innerText.trim(),
+             padrino: document.getElementById('det-padrino').innerText.trim(),
+             madrina: document.getElementById('det-madrina').innerText.trim(),
+             lugarNac: document.getElementById('det-lugar-nac').innerText.trim(),
+             fechaNac: fechaNacFinal,
+             lugarBau: document.getElementById('det-lugar-bau').innerText.trim(),
+             fechaBau: fechaBauFinal,
+             fechaConf: fechaConfFinal, 
+             lugarConf: moduloActual === 'confirmacion' ? document.getElementById('det-lugar-conf').innerText : "",
+             notas: document.getElementById('box-notas-margen').value,
+             sacerdote_activo: document.getElementById('input-sacerdote-activo').value
+           },
+           usuario: localStorage.getItem('usuarioParroquia')
+        };
+        
+        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(pckg) });
+        const data = await res.json();
+        
+        if (data.success) {
+          sidebarDetalle.hide();
+          document.getElementById('btn-open-pdf').href = data.pdfUrl;
+          modalExito.show();
+        } else {
+          alert("Error: " + data.message);
+        }
+      } catch (e) {
+        alert("Error de conexión con el servidor.");
+      } finally {
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
+      }
+    }
+
+    async function validarFechasYGenerar() {
+      const d = {
+        fecha_nacimiento: document.getElementById('det-fecha-nac').innerText,
+        fecha_nac_escrito: document.getElementById('det-fecha-nac-literal').innerText,
+        fecha_bautizo: document.getElementById('det-fecha-bau').innerText,
+        fecha_bautizo_escrito: document.getElementById('det-fecha-bau-literal').innerText
+      };
+
+      let fConfNum = "";
+      let fConfEsc = "";
+      if (moduloActual === 'confirmacion') {
+        fConfNum = document.getElementById('det-fecha-conf').innerText;
+        fConfEsc = document.getElementById('det-fecha-conf-literal').innerText;
+      }
+
+      let fechaNacFinal = "";
+      let fechaBauFinal = "";
+      let fechaConfFinal = "";
+    
+      async function procesarEscenarios(tipo, fecNumerica, fecEscrita) {
+        let numLimpia = (fecNumerica && fecNumerica !== "-") ? fecNumerica.trim() : "";
+        let escLimpia = (fecEscrita && fecEscrita !== "-") ? fecEscrita.trim() : "";
+        let numLarga = formatoFechaLarga(numLimpia);
+        
+        let resultado = "";
+        if (numLimpia !== "" && escLimpia !== "") {
+          let eleccion = await pedirEleccionFecha(tipo, escLimpia, numLarga);
+          if (eleccion === 'cancelar') return null; 
+          resultado = (eleccion === 'escrita') ? escLimpia : numLarga;
+        } 
+        else if (numLimpia !== "") resultado = numLarga;
+        else if (escLimpia !== "") resultado = escLimpia;
+        else resultado = ""; 
+
+        return resultado.toUpperCase();
+      }
+    
+      fechaNacFinal = await procesarEscenarios("NACIMIENTO", d.fecha_nacimiento, d.fecha_nac_escrito);
+      if (fechaNacFinal === null) return; 
+    
+      await new Promise(r => setTimeout(r, 400));
+    
+      fechaBauFinal = await procesarEscenarios("BAUTISMO", d.fecha_bautizo, d.fecha_bautizo_escrito);
+      if (fechaBauFinal === null) return; 
+
+      if (moduloActual === 'confirmacion') {
+        await new Promise(r => setTimeout(r, 400));
+        fechaConfFinal = await procesarEscenarios("CONFIRMACIÓN", fConfNum, fConfEsc);
+        if (fechaConfFinal === null) return;
+      }
+    
+      enviarDatosAGoogleSheets(fechaNacFinal, fechaBauFinal, fechaConfFinal);
+    }
+
+    function setHistorialSource(source) {
+      fuenteHistorialActual = source;
+      paginaHistorialActual = 1;
+      datosHistorialCrudos = [];
+      
+      document.getElementById('btn-hist-bau').classList.toggle('active', source === 'bautismo');
+      document.getElementById('btn-hist-conf').classList.toggle('active', source === 'confirmacion');
+      
+      cargarHistorial();
+    }
+
+    async function cargarHistorial() {
+      const cont = document.getElementById("historial-body");
+      const loading = document.getElementById("historial-loading");
+      
+      if (datosHistorialCrudos.length === 0) {
+        cont.innerHTML = "";
+        loading.classList.remove('d-none');
+        const urlParaHistorial = (fuenteHistorialActual === 'bautismo') ? API_BAUTISMO : API_CONFIRMACION;
+        
+        try {
+          const res = await fetch(urlParaHistorial, { method: 'POST', body: JSON.stringify({ accion: 'obtener_historial' }) });
+          const obj = await res.json();
+          datosHistorialCrudos = obj.data || [];
+        } catch (e) {
+          cont.innerHTML = "<tr><td colspan='4' class='text-center text-danger'>Error de conexión.</td></tr>";
+          loading.classList.add('d-none');
+          return;
+        }
+      }
+
+      loading.classList.add('d-none');
+      renderizarTablaHistorial();
+    }
+
+    function renderizarTablaHistorial() {
+      const cont = document.getElementById("historial-body");
+      cont.innerHTML = "";
+
+      if (datosHistorialCrudos.length === 0) {
+        cont.innerHTML = "<tr><td colspan='4' class='text-center py-4'>No hay registros.</td></tr>";
+        return;
+      }
+
+      const inicio = (paginaHistorialActual - 1) * filasPorPaginaHistorial;
+      const fin = inicio + filasPorPaginaHistorial;
+      const paginados = datosHistorialCrudos.slice(inicio, fin);
+
+      paginados.forEach(g => {
+        cont.innerHTML += `<tr class="small">
+          <td>${g.fechaHora}</td>
+          <td class="fw-bold">${(g.nombreCompleto || "").toUpperCase()}</td>
+          <td><span class="badge bg-light text-dark border">${g.usuario}</span></td>
+          <td><a href="${g.link}" target="_blank" class="btn btn-sm btn-outline-primary py-0 fw-bold">Ver PDF</a></td>
+         </tr>`;
+      });
+
+      renderizarPaginacionHistorial();
+    }
+
+    function renderizarPaginacionHistorial() {
+      const totalPaginas = Math.ceil(datosHistorialCrudos.length / filasPorPaginaHistorial);
+      const container = document.getElementById('hist-pagination-controls');
+      const info = document.getElementById('hist-pagination-info');
+      
+      container.innerHTML = '';
+      info.innerText = `Página ${paginaHistorialActual} de ${totalPaginas} (${datosHistorialCrudos.length} totales)`;
+
+      if (totalPaginas <= 1) return;
+
+      container.innerHTML += `<li class="page-item ${paginaHistorialActual === 1 ? 'disabled' : ''}">
+        <a class="page-link" href="javascript:void(0)" onclick="cambiarPaginaHistorial(${paginaHistorialActual - 1})"><i class="fas fa-chevron-left"></i></a>
+      </li>`;
+
+      for (let i = 1; i <= totalPaginas; i++) {
+        if (i === 1 || i === totalPaginas || (i >= paginaHistorialActual - 1 && i <= paginaHistorialActual + 1)) {
+          container.innerHTML += `<li class="page-item ${paginaHistorialActual === i ? 'active' : ''}">
+            <a class="page-link" href="javascript:void(0)" onclick="cambiarPaginaHistorial(${i})">${i}</a>
+          </li>`;
+        }
+      }
+
+      container.innerHTML += `<li class="page-item ${paginaHistorialActual === totalPaginas ? 'disabled' : ''}">
+        <a class="page-link" href="javascript:void(0)" onclick="cambiarPaginaHistorial(${paginaHistorialActual + 1})"><i class="fas fa-chevron-right"></i></a>
+      </li>`;
+    }
+
+    function cambiarPaginaHistorial(p) {
+      paginaHistorialActual = p;
+      renderizarTablaHistorial();
+    }
+
+    function formatoFechaLarga(fechaStr) {
+      if(!fechaStr || fechaStr === "-") return "";
+      let p = fechaStr.trim().split("/");
+      if(p.length === 3) {
+        const meses = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
+        let dia = parseInt(p[0], 10);
+        let mes = meses[parseInt(p[1], 10) - 1];
+        if(dia && mes && p[2]) return `${dia} DE ${mes} DE ${p[2]}`;
+      }
+      return fechaStr.toUpperCase();
+    }
+    
+    function pedirEleccionFecha(tipo, escrita, numericaLarga) {
+      return new Promise((resolve) => {
+        document.getElementById('conflict-instruction').innerHTML = 
+          `Se encontraron dos formas de escribir la fecha de <b>${tipo}</b>. <br> ¿Cuál de estas dos quiere que se imprima?`;
+        
+        document.getElementById('txt-written-preview').innerText = escrita;
+        document.getElementById('txt-numeric-preview').innerText = numericaLarga;
+
+        document.getElementById('btn-use-written').onclick = () => { modalConflicto.hide(); resolve('escrita'); };
+        document.getElementById('btn-use-numeric').onclick = () => { modalConflicto.hide(); resolve('numerica'); };
+        document.getElementById('btn-cancel-conflict').onclick = () => { modalConflicto.hide(); resolve('cancelar'); };
+        
+        modalConflicto.show();
+      });
+    }
+
+    function habilitarEdicion() {
+      document.getElementById('panelDetalle').classList.add('editing-mode');
+      document.getElementById('btn-edit-record').classList.add('d-none');
+      document.getElementById('edit-controls').classList.remove('d-none');
+      
+      document.querySelectorAll('.editable-field').forEach(el => el.setAttribute('contenteditable', 'true'));
+      document.getElementById('box-notas-margen').removeAttribute('readonly');
+      document.getElementById('box-anotaciones').removeAttribute('readonly');
+      document.getElementById('btn-generate-pdf').disabled = true;
+    }
+
+    function cancelarEdicion() {
+      document.getElementById('panelDetalle').classList.remove('editing-mode');
+      document.getElementById('btn-edit-record').classList.remove('d-none');
+      document.getElementById('edit-controls').classList.add('d-none');
+      
+      document.querySelectorAll('.editable-field').forEach(el => el.removeAttribute('contenteditable'));
+      document.getElementById('box-notas-margen').setAttribute('readonly', 'true');
+      document.getElementById('box-anotaciones').setAttribute('readonly', 'true');
+      document.getElementById('btn-generate-pdf').disabled = false;
+    }
+
+    async function guardarCambiosEdicion() {
+      const btn = document.getElementById('btn-save-edit');
+      const originalHTML = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>...`;
+    
+      const datosEditados = {
+        id: registroSeleccionado.id,
+        nro_libro: document.getElementById('det-libro').innerText.trim(),
+        foja: document.getElementById('det-foja').innerText.trim(),
+        numero: document.getElementById('det-num').innerText.trim(),
+        nombres: document.getElementById('det-nombres').innerText.trim(),
+        apellidos: document.getElementById('det-apellidos').innerText.trim(),
+        padre: document.getElementById('det-padre').innerText.trim(),
+        madre: document.getElementById('det-madre').innerText.trim(),
+        lugar_nacimiento: document.getElementById('det-lugar-nac').innerText.trim(),
+        fecha_nacimiento: document.getElementById('det-fecha-nac').innerText.trim(),
+        fecha_nac_escrito: document.getElementById('det-fecha-nac-literal').innerText.trim(),
+        fecha_bautizo: document.getElementById('det-fecha-bau').innerText.trim(),
+        fecha_bautizo_escrito: document.getElementById('det-fecha-bau-literal').innerText.trim(),
+        ministro: document.getElementById('det-ministro').innerText.trim(),
+        padrino: document.getElementById('det-padrino').innerText.trim(),
+        madrina: document.getElementById('det-madrina').innerText.trim(),
+        nota_marginal: document.getElementById('box-notas-margen').value,
+        anotaciones: document.getElementById('box-anotaciones').value
+      };
+      
+      if (moduloActual === 'confirmacion') {
+        datosEditados.lugar_bautismo = document.getElementById('det-lugar-bau').innerText.trim();
+        datosEditados.lugar_confirmacion = document.getElementById('det-lugar-conf').innerText.trim();
+        datosEditados.fecha_confirmacion = document.getElementById('det-fecha-conf').innerText.trim();
+        datosEditados.fecha_confirmacion_escrita = document.getElementById('det-fecha-conf-literal').innerText.trim();
+      } else {
+        datosEditados.lugar_bautizo = document.getElementById('det-lugar-bau').innerText.trim();
+      }
+    
+      try {
+        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ accion: 'editar', datos: datosEditados }) });
+        const data = await res.json();
+        if (data.success) {
+          cancelarEdicion();
+          ejecutarBusqueda();
+          let modalUpdateSuccess = new bootstrap.Modal(document.getElementById('updateSuccessModal'));
+          modalUpdateSuccess.show();
+        } else { alert("Error: " + data.message); }
+      } catch (e) { alert("Error de conexión al guardar."); } 
+      finally { btn.disabled = false; btn.innerHTML = originalHTML; }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Guard de sesión: si no inició sesión en el portal, lo regresamos al login
+      if (localStorage.getItem('sesionParroquia') !== 'activa') {
+        location.href = 'index.html';
+        return;
+      }
+
+      modalConflicto = new bootstrap.Modal(document.getElementById('conflictModal'));
+      sidebarDetalle = new bootstrap.Offcanvas(document.getElementById('panelDetalle'));
+      modalExito = new bootstrap.Modal(document.getElementById('successPdfModal'));
+      modalSacerdotes = new bootstrap.Modal(document.getElementById('modalSacerdotes'));
+      panelCandidato = new bootstrap.Modal(document.getElementById('panelCandidato'));
+
+      mostrarApp();
+    });
+
+    async function abrirModalSacerdotes() {
+      modalSacerdotes.show();
+      await cargarSacerdotesLista();
+    }
+
+    async function cargarSacerdotesSilencioso() {
+      try {
+        const res = await fetch(API_BAUTISMO, { method: 'POST', body: JSON.stringify({ accion: 'obtener_sacerdotes' }) });
+        const data = await res.json();
+        if (data.success) {
+          data.data.forEach(sac => {
+            if (sac[1] && sac[1].toString().toUpperCase() === 'ACTIVO') {
+              document.getElementById('input-sacerdote-activo').value = sac[0];
+            }
+          });
+        }
+      } catch (e) { console.error("Error cargando sacerdote activo", e); }
+    }
+
+    async function cargarSacerdotesLista() {
+      const lista = document.getElementById('lista-sacerdotes');
+      lista.innerHTML = '<tr><td class="text-center py-3"><div class="spinner-border text-primary spinner-border-sm"></div> Cargando...</td></tr>';
+      
+      try {
+        const res = await fetch(API_BAUTISMO, { method: 'POST', body: JSON.stringify({ accion: 'obtener_sacerdotes' }) });
+        const data = await res.json();
+        
+        if (data.success) {
+          lista.innerHTML = '';
+          let hayActivo = false;
+          
+          data.data.forEach(sac => {
+            const nombre = sac[0];
+            const estado = sac[1]; 
+            const esActivo = (estado && estado.toString().toUpperCase() === 'ACTIVO');
+            
+            if (esActivo) {
+              document.getElementById('input-sacerdote-activo').value = nombre;
+              hayActivo = true;
+            }
+            
+            lista.innerHTML += `
+              <tr>
+                <td class="fw-semibold text-dark small">${nombre}</td>
+                <td class="text-end" style="width: 100px;">
+                  ${esActivo 
+                    ? '<span class="badge bg-success bg-opacity-10 text-success border border-success p-2 w-100">ACTIVO</span>' 
+                    : `<button class="btn btn-sm btn-outline-primary rounded-pill fw-bold w-100" onclick="activarSacerdote('${nombre}')">Activar</button>`}
+                 </td>
+              </tr>
+            `;
+          });
+          
+          if (!hayActivo) document.getElementById('input-sacerdote-activo').value = "";
+        }
+      } catch (e) {
+        lista.innerHTML = '<tr><td class="text-danger text-center py-3">Error de conexión.</td></tr>';
+      }
+    }
+
+    async function agregarSacerdote() {
+      const input = document.getElementById('nuevo-sacerdote');
+      const nombre = input.value.trim();
+      if (!nombre) return;
+      
+      const btn = document.getElementById('btn-add-sac');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner-border spinner-border-sm"></div>';
+      
+      try {
+        await fetch(API_BAUTISMO, { method: 'POST', body: JSON.stringify({ accion: 'agregar_sacerdote', nombre: nombre }) });
+        input.value = '';
+        await cargarSacerdotesLista();
+      } catch(e) { alert('Error al agregar sacerdote'); } 
+      finally { btn.disabled = false; btn.innerHTML = 'Agregar'; }
+    }
+
+    async function activarSacerdote(nombre) {
+      const lista = document.getElementById('lista-sacerdotes');
+      lista.innerHTML = '<tr><td class="text-center py-3"><div class="spinner-border text-primary spinner-border-sm"></div> Actualizando...</td></tr>';
+      try {
+        await fetch(API_BAUTISMO, { method: 'POST', body: JSON.stringify({ accion: 'activar_sacerdote', nombre: nombre }) });
+        await cargarSacerdotesLista();
+        await cargarSacerdotesSilencioso(); 
+      } catch(e) { alert('Error al activar sacerdote'); await cargarSacerdotesLista(); }
+    }
+
+    // ===================== MÓDULO CANDIDATOS: lógica JS =====================
+    async function cargarCandidatos(termino) {
+      document.getElementById('cand-loading-indicator').classList.remove('d-none');
+      document.getElementById('cand-table-container').classList.add('d-none');
+      try {
+        const res = await fetch(API_BAUTISMO, { method:'POST', body: JSON.stringify({ accion:'buscar_candidatos', termino: termino || '' }) });
+        const data = await res.json();
+        candidatos = data.data || [];
+      } catch (e) {
+        console.error(e);
+        candidatos = [];
+      }
+      document.getElementById('cand-loading-indicator').classList.add('d-none');
+      document.getElementById('cand-table-container').classList.remove('d-none');
+      renderTablaCandidatos();
+    }
+
+    function renderTablaCandidatos() {
+      const tbody = document.getElementById('cand-tbody');
+      tbody.innerHTML = '';
+      candidatos.forEach((c, i) => {
+        const badge = c.estado === 'IMPRESO'
+          ? '<span class="badge badge-impreso">IMPRESO</span>'
+          : '<span class="badge badge-pendiente">PENDIENTE</span>';
+        tbody.innerHTML += `<tr>
+          <td><input type="checkbox" class="cand-check" data-idx="${i}" onchange="actualizarContador()"></td>
+          <td class="fw-bold text-primary small">${c.id}</td>
+          <td class="fw-semibold">${c.nombre_bautizado}</td>
+          <td class="small text-muted">${c.fecha_bautismo_prog ? ((c.dia_bautismo ? c.dia_bautismo + ' ' : '') + isoDisplay(c.fecha_bautismo_prog)) : '-'}</td>
+          <td class="small text-muted">${(c.padre||'-')} y ${(c.madre||'-')}</td>
+          <td>${badge}</td>
+          <td>
+            <button class="btn btn-action btn-sm" onclick="editarDesdeTabla(${i})">Editar</button>
+            ${c.estado === 'IMPRESO'
+              ? `<button class="btn btn-action btn-sm ms-1" disabled title="No se puede eliminar: ya fue impreso" style="opacity:.45; cursor:not-allowed;"><i class="fas fa-lock"></i></button>`
+              : `<button class="btn btn-action btn-sm ms-1 text-danger" onclick="eliminarDesdeTabla(${i})" title="Eliminar candidato"><i class="fas fa-trash"></i></button>`}
+          </td>
+        </tr>`;
+      });
+      actualizarContador();
+    }
+
+    function toggleTodos(cb) {
+      document.querySelectorAll('.cand-check').forEach(el => el.checked = cb.checked);
+      actualizarContador();
+    }
+    function actualizarContador() {
+      document.getElementById('cand-count-sel').innerText =
+        document.querySelectorAll('.cand-check:checked').length;
+    }
+
+    document.getElementById('cand-search-input')?.addEventListener('keypress', e => {
+      if (e.key === 'Enter') cargarCandidatos(e.target.value.trim());
+    });
+
+    function abrirFormCandidato() {
+      document.getElementById('cand-form-titulo').innerText = 'Nuevo candidato';
+      ['cand-id','cand-nombre','cand-fecha-bau','cand-hora','cand-ministro','cand-lugar-nac','cand-fecha-nac',
+       'cand-padre','cand-lugar-padre','cand-madre','cand-lugar-madre','cand-padrino','cand-madrina',
+       'cand-direccion','cand-celular'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('cand-dia-preview').innerText = '';
+      panelCandidato.show();
+    }
+
+    function editarDesdeTabla(i) {
+      const c = candidatos[i];
+      document.getElementById('cand-form-titulo').innerText = 'Editar candidato';
+      document.getElementById('cand-id').value = c.id;
+      document.getElementById('cand-nombre').value = c.nombre_bautizado;
+      document.getElementById('cand-fecha-bau').value = c.fecha_bautismo_prog || '';
+      document.getElementById('cand-hora').value = c.hora;
+      document.getElementById('cand-ministro').value = c.ministro;
+      document.getElementById('cand-lugar-nac').value = c.lugar_nacimiento;
+      document.getElementById('cand-fecha-nac').value = c.fecha_nacimiento || '';
+      document.getElementById('cand-padre').value = c.padre;
+      document.getElementById('cand-lugar-padre').value = c.lugar_nac_padre;
+      document.getElementById('cand-madre').value = c.madre;
+      document.getElementById('cand-lugar-madre').value = c.lugar_nac_madre;
+      document.getElementById('cand-padrino').value = c.padrino;
+      document.getElementById('cand-madrina').value = c.madrina;
+      document.getElementById('cand-direccion').value = c.direccion;
+      document.getElementById('cand-celular').value = c.celular;
+      actualizarPreviewDia();
+      panelCandidato.show();
+    }
+
+    async function eliminarDesdeTabla(i) {
+      const c = candidatos[i];
+      if (c.estado === 'IMPRESO') { return; } // resguardo extra, el botón ya viene deshabilitado
+      const ok = confirm(`¿Eliminar el registro de "${c.nombre_bautizado}"? Esta acción no se puede deshacer.`);
+      if (!ok) return;
+
+      try {
+        const res = await fetch(API_BAUTISMO, { method:'POST', body: JSON.stringify({ accion:'eliminar_candidato', id: c.id }) });
+        const data = await res.json();
+        if (!data.success) { alert(data.message || 'No se pudo eliminar el candidato.'); }
+      } catch (e) {
+        alert('Error de conexión al eliminar el candidato.');
+        return;
+      }
+      cargarCandidatos();
+    }
+
+    async function guardarCandidato() {
+      const fechaBauISO = document.getElementById('cand-fecha-bau').value;
+      const datos = {
+        id: document.getElementById('cand-id').value,
+        nombre_bautizado: document.getElementById('cand-nombre').value.trim(),
+        fecha_bautismo_prog: fechaBauISO,               // yyyy-mm-dd
+        dia_bautismo: diaSemanaTexto(fechaBauISO),       // calculado automáticamente, no se pide al usuario
+        hora: document.getElementById('cand-hora').value.trim(),
+        ministro: document.getElementById('cand-ministro').value.trim(),
+        lugar_nacimiento: document.getElementById('cand-lugar-nac').value.trim(),
+        fecha_nacimiento: document.getElementById('cand-fecha-nac').value,   // yyyy-mm-dd
+        padre: document.getElementById('cand-padre').value.trim(),
+        lugar_nac_padre: document.getElementById('cand-lugar-padre').value.trim(),
+        madre: document.getElementById('cand-madre').value.trim(),
+        lugar_nac_madre: document.getElementById('cand-lugar-madre').value.trim(),
+        padrino: document.getElementById('cand-padrino').value.trim(),
+        madrina: document.getElementById('cand-madrina').value.trim(),
+        direccion: document.getElementById('cand-direccion').value.trim(),
+        celular: document.getElementById('cand-celular').value.trim()
+      };
+      if (!datos.nombre_bautizado) { alert('El nombre del bautizado es obligatorio.'); return; }
+
+      const btn = document.getElementById('btn-guardar-candidato');
+      const originalHTML = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> Guardando...`;
+
+      const accion = datos.id ? 'editar_candidato' : 'registrar_candidato';
+      try {
+        await fetch(API_BAUTISMO, { method:'POST', body: JSON.stringify({ accion, datos }) });
+      } catch (e) {
+        alert('Error de conexión al guardar el candidato.');
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
+        return;
+      }
+
+      // Animación de confirmación antes de cerrar el modal
+      btn.classList.add('btn-guardado-ok');
+      btn.innerHTML = `<i class="fas fa-check-circle me-2"></i> ¡Guardado!`;
+      await new Promise(r => setTimeout(r, 650));
+
+      btn.classList.remove('btn-guardado-ok');
+      btn.disabled = false;
+      btn.innerHTML = originalHTML;
+      panelCandidato.hide();
+      cargarCandidatos();
+    }
+
+    // ---- Helpers de fecha para el módulo Candidatos ----
+    // El <input type="date"> siempre entrega/recibe formato ISO (yyyy-mm-dd)
+    function diaSemanaTexto(fechaISO) {
+      if (!fechaISO) return '';
+      const dias = ["DOMINGO","LUNES","MARTES","MIÉRCOLES","JUEVES","VIERNES","SÁBADO"];
+      const [y, m, d] = fechaISO.split('-').map(Number);
+      if (!y || !m || !d) return '';
+      return dias[new Date(y, m - 1, d).getDay()];
+    }
+
+    // yyyy-mm-dd -> "25 DE JULIO DEL 2026" (reutiliza el arreglo de meses ya usado en el módulo de partidas)
+    function isoALargo(fechaISO) {
+      if (!fechaISO) return '';
+      const meses = ["ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"];
+      const [y, m, d] = fechaISO.split('-').map(Number);
+      if (!y || !m || !d) return '';
+      return `${d} DE ${meses[m - 1]} DEL ${y}`;
+    }
+
+    // yyyy-mm-dd -> "25/07/2026" (formato corto para mostrar en la tabla)
+    function isoDisplay(fechaISO) {
+      if (!fechaISO) return '-';
+      const [y, m, d] = fechaISO.split('-');
+      if (!y || !m || !d) return fechaISO;
+      return `${d}/${m}/${y}`;
+    }
+
+    // Actualiza el texto "SÁBADO" bajo el selector de fecha al elegir un día
+    function actualizarPreviewDia() {
+      const iso = document.getElementById('cand-fecha-bau').value;
+      const dia = diaSemanaTexto(iso);
+      document.getElementById('cand-dia-preview').innerText = dia ? `Se guardará como: ${dia}, ${isoALargo(iso)}` : '';
+    }
+    document.getElementById('cand-fecha-bau')?.addEventListener('change', actualizarPreviewDia);
+
+    function construirFicha(c) {
+      return `
+        <div class="ficha-bautizo">
+          <div class="ficha-header">
+            <span>${NOMBRE_PARROQUIA}</span>
+            <span>Hora: <u>${c.hora || '-------'}</u></span>
+          </div>
+          <div class="ficha-titulo">FICHA DE INSCRIPCIÓN PARA BAUTIZO</div>
+
+          <div class="ficha-fila"><div class="ficha-label">NOMBRE DE LA BAUTIZADO</div><div class="ficha-dospuntos">:</div><div class="ficha-valor">${c.nombre_bautizado||'-------'}</div></div>
+          <div class="ficha-fila"><div class="ficha-label">FECHA DE BAUTISMO</div><div class="ficha-dospuntos">:</div><div class="ficha-valor">${c.fecha_bautismo_prog ? ((c.dia_bautismo ? c.dia_bautismo + ', ' : '') + isoALargo(c.fecha_bautismo_prog)) : '-------'}</div></div>
+          <div class="ficha-fila"><div class="ficha-label">MINISTRO DEL BAUTISMO</div><div class="ficha-dospuntos">:</div><div class="ficha-valor">${c.ministro||'-------'}</div></div>
+          <div class="ficha-fila"><div class="ficha-label">LUGAR Y FECHA DE NACIMIENTO</div><div class="ficha-dospuntos">:</div><div class="ficha-valor">${(c.lugar_nacimiento||'-------')}, ${c.fecha_nacimiento ? isoALargo(c.fecha_nacimiento) : '-------'}</div></div>
+          <div class="ficha-fila"><div class="ficha-label">NOMBRE Y APELLIDOS DEL PADRE</div><div class="ficha-dospuntos">:</div><div class="ficha-valor">${c.padre||'-------'}</div></div>
+          <div class="ficha-fila"><div class="ficha-label">LUGAR DE NACIMIENTO DEL PADRE</div><div class="ficha-dospuntos">:</div><div class="ficha-valor">${c.lugar_nac_padre||'-------'}</div></div>
+          <div class="ficha-fila"><div class="ficha-label">NOMBRE Y APELLIDOS DE LA MADRE</div><div class="ficha-dospuntos">:</div><div class="ficha-valor">${c.madre||'-------'}</div></div>
+          <div class="ficha-fila"><div class="ficha-label">LUGAR DE NACIMIENTO DE LA MADRE</div><div class="ficha-dospuntos">:</div><div class="ficha-valor">${c.lugar_nac_madre||'-------'}</div></div>
+          <div class="ficha-fila"><div class="ficha-label">NOMBRE Y APELLIDOS DEL PADRINO</div><div class="ficha-dospuntos">:</div><div class="ficha-valor">${c.padrino||'-------'}</div></div>
+          <div class="ficha-fila"><div class="ficha-label">NOMBRE Y APELLIDOS DE LA MADRINA</div><div class="ficha-dospuntos">:</div><div class="ficha-valor">${c.madrina||'-------'}</div></div>
+
+          <div class="ficha-footer">
+            <div>DIRECCIÓN: ${c.direccion||'-------'}</div>
+            <div>CELULAR: ${c.celular||'-------'}</div>
+          </div>
+          <div class="ficha-firma">
+            <div class="linea"></div>
+            <small>Firma del Sacerdote que bautizó</small>
+          </div>
+        </div>`;
+    }
+
+    async function imprimirSeleccionados() {
+      const idxSeleccionados = Array.from(document.querySelectorAll('.cand-check:checked')).map(el => +el.dataset.idx);
+      if (idxSeleccionados.length === 0) { alert('Selecciona al menos un candidato para imprimir.'); return; }
+      const seleccionados = idxSeleccionados.map(i => candidatos[i]);
+
+      let html = '';
+      for (let i = 0; i < seleccionados.length; i += 2) {
+        const par = seleccionados.slice(i, i + 2);
+        html += `<div class="hoja-a4">
+          ${construirFicha(par[0])}
+          ${par[1] ? construirFicha(par[1]) : ''}
+        </div>`;
+      }
+      document.getElementById('print-area').innerHTML = html;
+
+      window.print();
+
+      const ids = seleccionados.map(c => c.id);
+      try {
+        await fetch(API_BAUTISMO, { method:'POST', body: JSON.stringify({ accion:'marcar_impreso_candidatos', ids }) });
+      } catch(e) { console.error(e); }
+      cargarCandidatos();
+    }
+  </script>
+</body>
+</html>

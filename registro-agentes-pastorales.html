@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agentes Pastorales · SICA</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+    :root {
+      --brand-navy: #002266;
+      --brand-accent: #0055ff;
+      --bg-gradient: linear-gradient(135deg, #f8fafd 0%, #e9effd 100%);
+      --surface: #ffffff;
+      --text-main: #1a1c21;
+      --text-muted: #5e6673;
+      --sidebar-width: 260px;
+      --sidebar-collapsed-width: 72px;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Navegación Lateral Estilo Moderno */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--surface);
+      border-right: 1px solid rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      padding: 2rem 1.5rem;
+      transition: width 0.3s ease;
+      position: relative;
+    }
+
+    .sidebar.collapsed {
+      width: var(--sidebar-collapsed-width);
+      padding: 2rem 0.5rem;
+    }
+
+    .sidebar.collapsed .sidebar-text,
+    .sidebar.collapsed .sidebar-user-text,
+    .sidebar.collapsed .sidebar-title small,
+    .sidebar.collapsed .nav-pill-custom span:not(.icon-only),
+    .sidebar.collapsed .mt-auto .d-flex span,
+    .sidebar.collapsed .border-top .d-flex span,
+    .sidebar.collapsed .sidebar-title h4 span {
+      display: none;
+    }
+
+    .sidebar.collapsed .nav-pill-custom {
+      text-align: center;
+      padding: 0.8rem 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .sidebar.collapsed .nav-pill-custom i {
+      margin-right: 0 !important;
+      font-size: 1.2rem;
+    }
+
+    .sidebar.collapsed .mt-auto .d-flex { justify-content: center; }
+    .sidebar.collapsed .mt-auto .rounded-circle { margin-right: 0 !important; }
+    .sidebar.collapsed .btn-outline-danger { font-size: 0; padding: 0.5rem; }
+    .sidebar.collapsed .btn-outline-danger i { font-size: 1rem; margin-right: 0; }
+    .sidebar.collapsed .btn-outline-danger span { display: none; }
+
+    .sidebar-toggle-btn {
+      position: absolute;
+      right: -12px;
+      top: 30px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      color: var(--brand-navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      z-index: 10;
+      font-size: 12px;
+    }
+    .sidebar-toggle-btn:hover { background: var(--brand-navy); color: white; border-color: var(--brand-navy); }
+    .sidebar.collapsed .sidebar-toggle-btn i { transform: rotate(180deg); }
+
+    .nav-pill-custom {
+      border: none;
+      background: transparent;
+      padding: 0.8rem 1rem;
+      border-radius: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-align: left;
+      transition: all 0.3s ease;
+      margin-bottom: 0.5rem;
+      width: 100%;
+    }
+    .nav-pill-custom.active { background: var(--brand-navy); color: white; box-shadow: 0 4px 12px rgba(0,34,102,0.2); }
+    .nav-pill-custom:hover:not(.active) { background: rgba(0,34,102,0.05); color: var(--brand-navy); }
+
+    .main-content { flex: 1; overflow-y: auto; padding: 2.5rem; }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.4);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    }
+
+    .search-box {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-end;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .form-control-custom, select.form-control-custom {
+      background: #f1f3f7;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      transition: all 0.3s;
+    }
+    .form-control-custom:focus {
+      background: white;
+      border-color: var(--brand-accent);
+      box-shadow: 0 0 0 4px rgba(0,85,255,0.1);
+      outline: none;
+    }
+
+    #panelAgente label{
+      font-size:.72rem; font-weight:700; margin-bottom:.2rem; color:var(--text-muted);
+      text-transform:uppercase; letter-spacing:.3px;
+    }
+    #panelAgente .form-control-custom{ padding:.5rem .7rem; font-size:.85rem; border-radius:9px; }
+    #panelAgente .row.g-2{ --bs-gutter-x:.6rem; }
+    #panelAgente .mb-2{ margin-bottom:.6rem !important; }
+
+    @keyframes candCheckPop{
+      0%{ transform:scale(0.4); opacity:0; }
+      60%{ transform:scale(1.15); opacity:1; }
+      100%{ transform:scale(1); opacity:1; }
+    }
+    .btn-guardado-ok{ background:#1b8f4c !important; animation:candCheckPop .35s ease; }
+    .btn-guardado-ok i{ animation:candCheckPop .4s ease; }
+
+    .table-container { background: var(--surface); border-radius: 20px; overflow-x: auto; }
+    .table { min-width: 600px; }
+    .table thead th {
+      background: #f8fafd;
+      padding: 1.2rem;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      border: none;
+    }
+    .table tbody td { padding: 1.2rem; vertical-align: middle; border-bottom: 1px solid #f1f3f7; }
+
+    .btn-action {
+      background: #f1f3f7;
+      color: var(--brand-navy);
+      border: none;
+      border-radius: 10px;
+      padding: 0.5rem 1rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .btn-action:hover { background: var(--brand-navy); color: white; }
+
+    .offcanvas-custom {
+      width: 700px !important;
+      border-left: none;
+      box-shadow: -10px 0 40px rgba(0,0,0,0.1);
+      background: #f8fafd;
+    }
+
+    .detail-section {
+      background: white;
+      border-radius: 16px;
+      padding: 0.8rem;
+      margin-bottom: 0.8rem;
+      border: 1px solid rgba(0,0,0,0.03);
+    }
+    .detail-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .detail-value { font-weight: 600; color: var(--brand-navy); font-size: 1rem; }
+
+    .modal-success-pdf { border-radius: 30px; border: none; }
+
+    .btn-primary-custom {
+      background: var(--brand-navy);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 1rem;
+      font-weight: 700;
+      width: 100%;
+    }
+
+    [contenteditable="true"] {
+      border: 1px dashed #0055ff !important;
+      background-color: #fff9e6 !important;
+      cursor: text;
+    }
+    .editing-mode .editable-field {
+      border: 1px solid #ced4da !important;
+      background-color: #ffffff !important;
+      padding: 6px 10px;
+      border-radius: 8px;
+      display: block;
+      width: 100%;
+      min-height: 34px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+      transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+      cursor: text;
+    }
+    .editing-mode .editable-field:focus {
+      border-color: var(--brand-accent) !important;
+      outline: 0;
+      box-shadow: 0 0 0 0.25rem rgba(0, 85, 255, 0.25) !important;
+    }
+
+    .mobile-navbar {
+      display: none;
+      background: var(--surface);
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .mobile-navbar-brand { display: flex; align-items: center; gap: 10px; }
+    .mobile-navbar-brand i { font-size: 1.5rem; color: var(--brand-navy); }
+    .mobile-navbar-brand span { font-weight: 700; color: var(--brand-navy); font-size: 1.1rem; }
+    .mobile-menu-btn {
+      background: transparent; border: none; font-size: 1.5rem; color: var(--brand-navy);
+      cursor: pointer; padding: 0.5rem; border-radius: 8px; transition: all 0.2s;
+    }
+    .mobile-menu-btn:hover { background: rgba(0,34,102,0.05); }
+
+    .mobile-dropdown-menu {
+      position: fixed; top: 70px; left: 0; right: 0;
+      background: var(--surface);
+      border-radius: 0 0 16px 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 0.5rem;
+      z-index: 99;
+      transform: translateY(-100%);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    .mobile-dropdown-menu.show { transform: translateY(0); opacity: 1; visibility: visible; }
+    .mobile-dropdown-menu .nav-pill-custom { margin-bottom: 0.25rem; width: 100%; text-align: left; }
+    .mobile-dropdown-menu .border-top { margin-top: 0.5rem; padding-top: 0.5rem; }
+
+    @media (max-width: 992px) {
+      body { overflow-y: auto; height: auto; }
+      .sidebar { display: none !important; }
+      .mobile-navbar { display: flex; justify-content: space-between; align-items: center; }
+      .main-content { padding: 1rem; }
+      .table-container { overflow-x: auto; }
+      .search-box { flex-direction: column; }
+      .search-box > div, .search-box button { width: 100% !important; }
+      .offcanvas-custom { width: 100% !important; }
+    }
+    @media (max-width: 600px) {
+      .offcanvas-custom { width: 100% !important; }
+    }
+
+    .pagination .page-link { border: none; color: var(--brand-navy); border-radius: 8px; margin: 0 3px; font-weight: 600; }
+    .pagination .page-item.active .page-link { background-color: var(--brand-navy); color: white; }
+
+    .btn-sheet {
+      background-color: #1d8548;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .btn-sheet:hover { background-color: #156536; color: white; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(29, 133, 72, 0.3); }
+
+    .badge-activo{background:#e8f5e9;color:#1b5e20;border:1px solid #a5d6a7;}
+    .badge-inactivo{background:#fdecea;color:#b71c1c;border:1px solid #f5c6cb;}
+
+    #print-area{display:none;}
+
+    .ficha-agente{
+      width:100%;
+      border:2px solid #000;
+      padding:14px 18px;
+      box-sizing:border-box;
+      font-family:'Georgia', 'Times New Roman', serif;
+      font-size:12px;
+      color:#000;
+      background:#fff;
+    }
+    .ficha-agente .ficha-header{
+      display:flex; justify-content:space-between; align-items:baseline;
+      font-weight:700; font-style:italic; font-size:13px; margin-bottom:10px;
+    }
+    .ficha-agente .ficha-titulo{
+      text-align:center; font-weight:700; font-style:italic; text-decoration:underline;
+      font-size:13.5px; margin-bottom:14px;
+    }
+    .ficha-agente .ficha-fila{ display:flex; margin-bottom:9px; line-height:1.3; }
+    .ficha-agente .ficha-label{ flex:0 0 240px; font-weight:600; }
+    .ficha-agente .ficha-dospuntos{ flex:0 0 14px; }
+    .ficha-agente .ficha-valor{ flex:1; border-bottom:1px dotted transparent; }
+    .ficha-agente .ficha-footer{ display:flex; justify-content:space-between; margin-top:8px; }
+    .ficha-agente .ficha-firma{ text-align:center; margin-top:34px; }
+    .ficha-agente .ficha-firma .linea{ border-top:1px solid #000; width:260px; margin:0 auto 4px; }
+
+    @media print{
+      body *{ visibility:hidden; }
+      #print-area, #print-area *{ visibility:visible; }
+      #print-area{ display:block; position:absolute; top:0; left:0; width:100%; }
+      .hoja-a4{
+        width:210mm; min-height:297mm; margin:0 auto; padding:10mm;
+        box-sizing:border-box; display:flex; flex-direction:column; justify-content:space-between;
+        page-break-after:always;
+      }
+      .hoja-a4:last-child{ page-break-after:auto; }
+      .hoja-a4 .ficha-agente{ height:135mm; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app-screen" style="display: flex; flex-direction: column; height: 100vh;">
+
+    <!-- NAVBAR MÓVIL -->
+    <div class="mobile-navbar">
+      <div class="mobile-navbar-brand">
+        <i class="fas fa-church"></i>
+        <span>SICA</span>
+      </div>
+      <button class="mobile-menu-btn" id="mobile-menu-toggle" onclick="toggleMobileMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+
+    <div class="mobile-dropdown-menu" id="mobile-dropdown-menu">
+      <a href="portal.html" class="nav-pill-custom d-flex align-items-center" style="text-decoration:none;">
+        <i class="fas fa-arrow-left me-2"></i> Volver al Portal
+      </a>
+      <button class="nav-pill-custom active" onclick="cambiarPestaña('tab-busqueda'); closeMobileMenu();" id="mobile-btn-agentes">
+        <i class="fas fa-hands-praying me-2"></i> Agentes Pastorales
+      </button>
+      <button class="nav-pill-custom" onclick="abrirModalMinisterios(); closeMobileMenu();" id="mobile-btn-ministerios">
+        <i class="fas fa-people-group me-2"></i> Ministerios / Servicios
+      </button>
+      <div class="border-top my-2"></div>
+      <button class="nav-pill-custom" onclick="cambiarPestaña('tab-historial'); renderHistorial(); closeMobileMenu();" id="mobile-btn-historial">
+        <i class="fas fa-history me-2"></i> Ver Historial
+      </button>
+      <div class="border-top my-2"></div>
+      <div class="px-2 py-2">
+        <div class="d-flex align-items-center mb-2">
+          <div class="rounded-circle bg-light p-2 me-2">
+            <i class="fas fa-user text-muted"></i>
+          </div>
+          <span class="small fw-bold" id="mobile-user-label">Admin</span>
+        </div>
+        <button onclick="cerrarSesion()" class="btn btn-sm btn-outline-danger w-100 rounded-pill">
+          <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
+        </button>
+      </div>
+    </div>
+
+    <div style="display: flex; flex: 1; overflow: hidden;">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="main-sidebar">
+        <div class="sidebar-toggle-btn" id="sidebar-toggle" onclick="toggleSidebar()">
+          <i class="fas fa-chevron-left"></i>
+        </div>
+
+        <div class="mb-5 px-2 sidebar-title">
+          <h4 class="fw-bold text-parroquia"><i class="fas fa-church me-2"></i><span>SICA</span></h4>
+          <small class="text-muted fw-semibold sidebar-text">Sistema de Archivo</small>
+        </div>
+
+        <a href="portal.html" class="nav-pill-custom d-flex align-items-center" style="text-decoration:none;">
+          <i class="fas fa-arrow-left me-2"></i><span class="sidebar-text">Volver al Portal</span>
+        </a>
+
+        <button class="nav-pill-custom active" onclick="cambiarPestaña('tab-busqueda')" id="btn-mod-agentes">
+          <i class="fas fa-hands-praying me-2"></i><span class="sidebar-text">Agentes Pastorales</span>
+        </button>
+
+        <button class="nav-pill-custom" onclick="abrirModalMinisterios()" id="btn-mod-ministerios">
+          <i class="fas fa-people-group me-2"></i><span class="sidebar-text">Ministerios / Servicios</span>
+        </button>
+
+        <div class="mt-4 pt-4 border-top">
+          <button class="nav-pill-custom w-100" onclick="cambiarPestaña('tab-historial'); renderHistorial()" id="btn-tab-historial">
+            <i class="fas fa-history me-2"></i><span class="sidebar-text">Ver Historial</span>
+          </button>
+        </div>
+
+        <div class="mt-auto pt-4 border-top">
+          <div class="d-flex align-items-center mb-3">
+            <div class="rounded-circle bg-light p-2 me-2">
+              <i class="fas fa-user text-muted"></i>
+            </div>
+            <span class="small fw-bold sidebar-user-text" id="nav-user-label">Admin</span>
+          </div>
+          <button onclick="cerrarSesion()" class="btn btn-sm btn-outline-danger w-100 rounded-pill">
+            <i class="fas fa-sign-out-alt me-1"></i><span class="sidebar-text">Cerrar Sesión</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <main class="main-content">
+
+        <!-- ===================== LISTADO DE AGENTES PASTORALES ===================== -->
+        <div id="tab-busqueda" class="vista-app">
+          <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <h2 class="fw-bold m-0">Registro de Agentes Pastorales</h2>
+            <div class="d-flex gap-2">
+              <button class="btn-sheet shadow-sm" onclick="exportarCSV()">
+                <i class="fas fa-file-excel"></i> <span class="d-none d-md-inline">Exportar a Excel (CSV)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Caja de Búsqueda -->
+          <div class="search-box glass-card">
+            <div class="flex-grow-1" style="min-width:220px;">
+              <label class="detail-label">Nombre, DNI o Comunidad</label>
+              <input type="text" id="search-input" class="form-control form-control-custom" placeholder="Ej: Juan Pérez o 44556677">
+            </div>
+            <div style="width: 220px;">
+              <label class="detail-label">Ministerio / Servicio</label>
+              <select id="ministerio-filter" class="form-control form-control-custom">
+                <option value="">Todos</option>
+              </select>
+            </div>
+            <div style="width: 160px;">
+              <label class="detail-label">Estado</label>
+              <select id="estado-filter" class="form-control form-control-custom">
+                <option value="">Todos</option>
+                <option value="ACTIVO">Activo</option>
+                <option value="INACTIVO">Inactivo</option>
+              </select>
+            </div>
+            <button onclick="ejecutarBusqueda()" class="btn btn-primary-custom px-4" style="width: auto;">Buscar</button>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2">
+              <button class="btn btn-action" onclick="abrirFormAgente()">
+                <i class="fas fa-user-plus me-1"></i> Nuevo agente pastoral
+              </button>
+              <button class="btn btn-primary-custom" style="width:auto;" onclick="imprimirSeleccionados()">
+                <i class="fas fa-print me-1"></i> Imprimir fichas (<span id="ag-count-sel">0</span>)
+              </button>
+            </div>
+          </div>
+
+          <div id="table-container" class="table-container shadow-sm">
+            <table class="table mb-0 table-hover">
+              <thead>
+                <tr>
+                  <th style="width:36px;"><input type="checkbox" id="ag-check-all" onclick="toggleTodos(this)"></th>
+                  <th>ID</th><th>Nombre completo</th><th>Ministerio / Servicio</th><th>Comunidad / Sector</th><th>Estado</th><th>Acción</th>
+                </tr>
+              </thead>
+              <tbody id="results-body"></tbody>
+            </table>
+          </div>
+          <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3 px-3 pb-3">
+            <small class="text-muted fw-semibold mb-2 mb-md-0" id="pagination-info">Mostrando 0 de 0 registros</small>
+            <nav>
+              <ul class="pagination pagination-sm mb-0" id="pagination-controls"></ul>
+            </nav>
+          </div>
+        </div>
+
+        <!-- ===================== HISTORIAL DE FICHAS IMPRESAS ===================== -->
+        <div id="tab-historial" class="vista-app d-none">
+          <h2 class="fw-bold mb-4">Fichas Impresas</h2>
+
+          <div class="table-container shadow-sm p-4">
+            <table class="table table-hover">
+              <thead>
+                <tr><th>Fecha de impresión</th><th>Agente pastoral</th><th>Ministerio / Servicio</th></tr>
+              </thead>
+              <tbody id="historial-body"></tbody>
+            </table>
+            <div id="historial-vacio" class="text-center text-muted py-4 d-none">Aún no se han impreso fichas.</div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ==================== PANEL LATERAL (OFFCANVAS) ==================== -->
+  <div class="offcanvas offcanvas-end offcanvas-custom" tabindex="-1" id="panelDetalle">
+    <div class="offcanvas-header bg-white border-bottom p-4">
+      <h5 class="offcanvas-title fw-bold text-parroquia" id="mod-head-nombre">Agente Pastoral</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body p-3">
+
+      <div class="d-flex gap-2 mb-2">
+        <div class="detail-section flex-grow-1 text-center py-1">
+          <div class="detail-label">ID</div>
+          <div class="detail-value fs-6 text-danger" id="det-id"></div>
+        </div>
+        <div class="detail-section flex-grow-1 text-center py-1">
+          <div class="detail-label">Ministerio</div>
+          <div class="detail-value fs-6" id="det-ministerio-box"></div>
+        </div>
+        <div class="detail-section flex-grow-1 text-center py-1">
+          <div class="detail-label">Estado</div>
+          <div class="detail-value fs-6" id="det-estado-box"></div>
+        </div>
+      </div>
+
+      <div class="row g-2 mb-2">
+        <div class="col-6">
+          <div class="detail-section h-100 mb-0">
+            <div class="detail-label">Nombres</div>
+            <div class="detail-value fs-6 editable-field" id="det-nombres"></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="detail-section h-100 mb-0">
+            <div class="detail-label">Apellidos</div>
+            <div class="detail-value fs-6 editable-field" id="det-apellidos"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-2 mb-2">
+        <div class="col-6">
+          <div class="detail-section h-100 mb-0">
+            <div class="detail-label">DNI</div>
+            <div class="detail-value small editable-field" id="det-dni"></div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="detail-section h-100 mb-0">
+            <div class="detail-label">Fecha de Nacimiento</div>
+            <div class="detail-value small editable-field" id="det-fecha-nac"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section mb-2">
+        <div class="detail-label">Dirección:</div>
+        <div class="detail-value small editable-field" id="det-direccion"></div>
+        <div class="d-flex gap-2 border-top mt-1 pt-1">
+          <div class="flex-fill" style="min-width:0;">
+            <span class="text-muted d-block" style="font-size:0.65rem;">Celular</span>
+            <span class="editable-field text-dark fw-medium small" id="det-celular"></span>
+          </div>
+          <div class="flex-fill" style="min-width:0;">
+            <span class="text-muted d-block" style="font-size:0.65rem;">Correo electrónico</span>
+            <span class="editable-field text-dark fw-medium small" id="det-correo"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section mb-2" style="background: #e9effd; border-color: var(--brand-accent)">
+        <div class="detail-label text-accent">Datos del Servicio Pastoral</div>
+        <div class="detail-value small editable-field" id="det-comunidad"></div>
+        <div class="d-flex gap-2 border-top border-primary-subtle mt-1 pt-1">
+          <div class="flex-fill" style="min-width:0;">
+            <span class="text-primary fw-bold d-block" style="font-size:0.65rem;">Ministerio / Servicio</span>
+            <span class="editable-field small" id="det-ministerio"></span>
+          </div>
+          <div class="flex-fill" style="min-width:0;">
+            <span class="text-primary fst-italic d-block" style="font-size:0.65rem;">Fecha de Ingreso</span>
+            <span class="editable-field small" id="det-fecha-ingreso"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section mb-2">
+        <div class="detail-label">Capacitación / Formación</div>
+        <div class="detail-value small editable-field" id="det-capacitacion"></div>
+      </div>
+
+      <div class="detail-section mb-2">
+        <div class="detail-label">Responsable que registra</div>
+        <div class="detail-value small editable-field" id="det-responsable"></div>
+      </div>
+
+      <div class="detail-section mb-2">
+        <div class="detail-label">Notas</div>
+        <textarea id="box-notas" class="form-control border-0 bg-light mt-1" style="font-size: 0.8rem; resize: none;" rows="2" readonly></textarea>
+      </div>
+
+      <button id="btn-generate-pdf" class="btn btn-primary-custom shadow-lg mt-2 py-2" onclick="imprimirFichaIndividual()">
+        <i class="fas fa-print me-2"></i> Generar Ficha
+      </button>
+
+      <div class="mt-3 border-top pt-3">
+        <button class="btn btn-outline-secondary w-100 mb-2 fw-bold" onclick="habilitarEdicion()" id="btn-edit-record">
+          <i class="fas fa-edit me-2"></i> Habilitar Edición
+        </button>
+        <div id="edit-controls" class="d-none d-flex gap-2 mb-2">
+          <button class="btn btn-success flex-grow-1 fw-bold" onclick="guardarCambiosEdicion()" id="btn-save-edit">
+            <i class="fas fa-save me-1"></i> Guardar
+          </button>
+          <button class="btn btn-light border fw-bold" onclick="cancelarEdicion()">Cancelar</button>
+        </div>
+        <button class="btn btn-outline-danger w-100 fw-bold" onclick="eliminarDesdePanel()">
+          <i class="fas fa-trash me-2"></i> Eliminar registro
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL: NUEVO / EDITAR AGENTE ===================== -->
+  <div class="modal fade" id="panelAgente" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width:clamp(320px, 92vw, 760px);">
+      <div class="modal-content border-0 shadow-lg" style="border-radius:24px;">
+        <div class="modal-header border-bottom px-4 pt-4">
+          <h5 class="modal-title fw-bold" id="ag-form-titulo">Nuevo agente pastoral</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <input type="hidden" id="ag-id">
+          <div class="row g-2 mb-2">
+            <div class="col-6"><label class="small fw-bold">Nombres</label>
+              <input class="form-control form-control-custom" id="ag-nombres"></div>
+            <div class="col-6"><label class="small fw-bold">Apellidos</label>
+              <input class="form-control form-control-custom" id="ag-apellidos"></div>
+          </div>
+          <div class="row g-2 mb-2">
+            <div class="col-6"><label class="small fw-bold">DNI</label>
+              <input class="form-control form-control-custom" id="ag-dni"></div>
+            <div class="col-6"><label class="small fw-bold">Fecha de nacimiento</label>
+              <input type="date" class="form-control form-control-custom" id="ag-fecha-nac"></div>
+          </div>
+          <div class="mb-2"><label class="small fw-bold">Dirección</label>
+            <input class="form-control form-control-custom" id="ag-direccion"></div>
+          <div class="row g-2 mb-2">
+            <div class="col-6"><label class="small fw-bold">Celular</label>
+              <input class="form-control form-control-custom" id="ag-celular" placeholder="972672087"></div>
+            <div class="col-6"><label class="small fw-bold">Correo electrónico</label>
+              <input type="email" class="form-control form-control-custom" id="ag-correo"></div>
+          </div>
+          <div class="row g-2 mb-2">
+            <div class="col-7"><label class="small fw-bold">Comunidad / Sector parroquial</label>
+              <input class="form-control form-control-custom" id="ag-comunidad"></div>
+            <div class="col-5"><label class="small fw-bold">Fecha de ingreso</label>
+              <input type="date" class="form-control form-control-custom" id="ag-fecha-ingreso"></div>
+          </div>
+          <div class="row g-2 mb-2">
+            <div class="col-8"><label class="small fw-bold">Ministerio / Servicio pastoral</label>
+              <select class="form-control form-control-custom" id="ag-ministerio"></select></div>
+            <div class="col-4"><label class="small fw-bold">Estado</label>
+              <select class="form-control form-control-custom" id="ag-estado">
+                <option value="ACTIVO">Activo</option>
+                <option value="INACTIVO">Inactivo</option>
+              </select></div>
+          </div>
+          <div class="mb-2"><label class="small fw-bold">Capacitación / Formación</label>
+            <input class="form-control form-control-custom" id="ag-capacitacion" placeholder="Ej: Escuela de Catequistas - Nivel II"></div>
+          <div class="mb-2"><label class="small fw-bold">Responsable que registra</label>
+            <input class="form-control form-control-custom" id="ag-responsable" placeholder="Ej: Pbro. Juan Pérez"></div>
+          <div class="mb-3"><label class="small fw-bold">Notas</label>
+            <textarea class="form-control form-control-custom" id="ag-notas" rows="2"></textarea></div>
+          <button class="btn btn-primary-custom w-100" id="btn-guardar-agente" onclick="guardarAgente()">
+            <i class="fas fa-save me-1"></i> Guardar agente pastoral
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL: MINISTERIOS / SERVICIOS ===================== -->
+  <div class="modal fade" id="modalMinisterios" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 24px;">
+        <div class="modal-header border-0 pb-0 mt-3 px-4">
+          <h5 class="fw-bold text-parroquia"><i class="fas fa-people-group text-primary me-2"></i>Ministerios / Servicios</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="input-group mb-4 shadow-sm" style="border-radius: 12px; overflow: hidden;">
+            <input type="text" id="nuevo-ministerio" class="form-control border-0 bg-light px-3" placeholder="Ej: Pastoral Juvenil">
+            <button class="btn btn-primary-custom px-4" style="border-radius: 0; width: auto;" onclick="agregarMinisterio()">Agregar</button>
+          </div>
+          <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+            <table class="table table-hover align-middle mb-0">
+              <tbody id="lista-ministerios"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="successPdfModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal-success-pdf p-4 text-center border-0 shadow-lg">
+        <div class="mb-4">
+          <div class="rounded-circle bg-success bg-opacity-10 d-inline-flex p-4 mb-3">
+            <i class="fas fa-check-circle fa-4x text-success"></i>
+          </div>
+          <h3 class="fw-bold">¡Guardado!</h3>
+          <p class="text-muted" id="successPdfText">El registro se guardó correctamente.</p>
+        </div>
+        <button class="btn btn-light rounded-4 py-2 fw-bold" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="print-area"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const NOMBRE_PARROQUIA = 'COMUNIDAD PARROQUIAL "SAN PEDRO APÓSTOL"- TACNA';
+    const LS_AGENTES = 'sica_agentes_pastorales';
+    const LS_MINISTERIOS = 'sica_ministerios_pastorales';
+    const LS_HISTORIAL = 'sica_historial_fichas_agentes';
+
+    let agentes = [];
+    let ministerios = [];
+    let historial = [];
+    let paginaActual = 1;
+    const filasPorPagina = 10;
+    let agenteSeleccionadoId = null;
+
+    let panelAgente, modalMinisterios, offcanvasDetalle, modalExito;
+
+    // ---------- Persistencia ----------
+    function cargarDatos() {
+      agentes = JSON.parse(localStorage.getItem(LS_AGENTES) || 'null') || [];
+      ministerios = JSON.parse(localStorage.getItem(LS_MINISTERIOS) || 'null');
+      if (!ministerios) {
+        ministerios = ["Catequesis", "Liturgia y Monaguillos", "Ministros de la Eucaristía", "Lectores",
+          "Coro y Música", "Pastoral Social y Cáritas", "Pastoral de Salud", "Pastoral Juvenil",
+          "Pastoral Familiar", "Legión de María", "Consejo Parroquial", "Pastoral Vocacional"];
+        guardarMinisterios();
+      }
+      historial = JSON.parse(localStorage.getItem(LS_HISTORIAL) || 'null') || [];
+    }
+    function guardarAgentes() { localStorage.setItem(LS_AGENTES, JSON.stringify(agentes)); }
+    function guardarMinisterios() { localStorage.setItem(LS_MINISTERIOS, JSON.stringify(ministerios)); }
+    function guardarHistorial() { localStorage.setItem(LS_HISTORIAL, JSON.stringify(historial)); }
+
+    function siguienteId() {
+      let max = 0;
+      agentes.forEach(a => {
+        const n = parseInt((a.id || '').replace('AP-', ''), 10);
+        if (!isNaN(n) && n > max) max = n;
+      });
+      return 'AP-' + String(max + 1).padStart(4, '0');
+    }
+
+    // ---------- Sidebar / menú móvil ----------
+    function toggleSidebar() {
+      const sidebar = document.getElementById('main-sidebar');
+      sidebar.classList.toggle('collapsed');
+      localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+    }
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-dropdown-menu');
+      menu.classList.toggle('show');
+      const btnIcon = document.querySelector('#mobile-menu-toggle i');
+      btnIcon.classList.toggle('fa-bars');
+      btnIcon.classList.toggle('fa-times');
+    }
+    function closeMobileMenu() {
+      document.getElementById('mobile-dropdown-menu').classList.remove('show');
+      const btnIcon = document.querySelector('#mobile-menu-toggle i');
+      btnIcon.classList.remove('fa-times');
+      btnIcon.classList.add('fa-bars');
+    }
+    document.addEventListener('click', function(event) {
+      const menu = document.getElementById('mobile-dropdown-menu');
+      const toggleBtn = document.getElementById('mobile-menu-toggle');
+      if (menu && menu.classList.contains('show')) {
+        if (!menu.contains(event.target) && !toggleBtn.contains(event.target)) closeMobileMenu();
+      }
+    });
+    function cerrarSesion() {
+      if (confirm('¿Cerrar sesión y volver al portal?')) window.location.href = 'portal.html';
+    }
+    function cambiarPestaña(id) {
+      document.querySelectorAll('.vista-app').forEach(v => v.classList.add('d-none'));
+      document.getElementById(id).classList.remove('d-none');
+      document.getElementById('btn-mod-agentes').classList.toggle('active', id === 'tab-busqueda');
+      document.getElementById('mobile-btn-agentes').classList.toggle('active', id === 'tab-busqueda');
+      document.getElementById('btn-tab-historial').classList.toggle('active', id === 'tab-historial');
+      document.getElementById('mobile-btn-historial').classList.toggle('active', id === 'tab-historial');
+    }
+
+    // ---------- Selects de Ministerios ----------
+    function poblarSelectsMinisterio() {
+      const filtro = document.getElementById('ministerio-filter');
+      const form = document.getElementById('ag-ministerio');
+      const valFiltro = filtro.value, valForm = form.value;
+      filtro.innerHTML = '<option value="">Todos</option>' + ministerios.map(m => `<option value="${m}">${m}</option>`).join('');
+      form.innerHTML = ministerios.map(m => `<option value="${m}">${m}</option>`).join('');
+      filtro.value = valFiltro; form.value = valForm;
+    }
+
+    function abrirModalMinisterios() {
+      renderListaMinisterios();
+      modalMinisterios.show();
+    }
+    function renderListaMinisterios() {
+      const lista = document.getElementById('lista-ministerios');
+      lista.innerHTML = '';
+      ministerios.forEach((m, i) => {
+        lista.innerHTML += `
+          <tr>
+            <td class="fw-semibold text-dark small">${m}</td>
+            <td class="text-end" style="width: 60px;">
+              <button class="btn btn-sm btn-outline-danger rounded-pill" onclick="eliminarMinisterio(${i})"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>`;
+      });
+    }
+    function agregarMinisterio() {
+      const input = document.getElementById('nuevo-ministerio');
+      const nombre = input.value.trim();
+      if (!nombre) return;
+      ministerios.push(nombre);
+      guardarMinisterios();
+      input.value = '';
+      renderListaMinisterios();
+      poblarSelectsMinisterio();
+    }
+    function eliminarMinisterio(i) {
+      if (!confirm(`¿Eliminar el ministerio "${ministerios[i]}"?`)) return;
+      ministerios.splice(i, 1);
+      guardarMinisterios();
+      renderListaMinisterios();
+      poblarSelectsMinisterio();
+    }
+
+    // ---------- Búsqueda / tabla ----------
+    function ejecutarBusqueda() { paginaActual = 1; renderTabla(); }
+
+    function filtrarAgentes() {
+      const termino = document.getElementById('search-input').value.trim().toLowerCase();
+      const ministerio = document.getElementById('ministerio-filter').value;
+      const estado = document.getElementById('estado-filter').value;
+      return agentes.filter(a => {
+        const texto = `${a.nombres} ${a.apellidos} ${a.dni} ${a.comunidad}`.toLowerCase();
+        const okTexto = !termino || texto.includes(termino);
+        const okMin = !ministerio || a.ministerio === ministerio;
+        const okEstado = !estado || a.estado === estado;
+        return okTexto && okMin && okEstado;
+      });
+    }
+
+    function renderTabla() {
+      const lista = filtrarAgentes();
+      const totalPaginas = Math.max(1, Math.ceil(lista.length / filasPorPagina));
+      if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+      const inicio = (paginaActual - 1) * filasPorPagina;
+      const pagina = lista.slice(inicio, inicio + filasPorPagina);
+
+      const tbody = document.getElementById('results-body');
+      tbody.innerHTML = '';
+      if (pagina.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">No se encontraron agentes pastorales.</td></tr>`;
+      }
+      pagina.forEach(a => {
+        const badge = a.estado === 'ACTIVO'
+          ? '<span class="badge badge-activo">ACTIVO</span>'
+          : '<span class="badge badge-inactivo">INACTIVO</span>';
+        tbody.innerHTML += `<tr>
+          <td><input type="checkbox" class="ag-check" data-id="${a.id}" onchange="actualizarContador()"></td>
+          <td class="fw-bold text-primary small">${a.id}</td>
+          <td class="fw-semibold" style="cursor:pointer;" onclick="abrirDetalle('${a.id}')">${a.nombres} ${a.apellidos}</td>
+          <td class="small text-muted">${a.ministerio || '-'}</td>
+          <td class="small text-muted">${a.comunidad || '-'}</td>
+          <td>${badge}</td>
+          <td>
+            <button class="btn btn-action btn-sm" onclick="abrirDetalle('${a.id}')">Ver</button>
+            <button class="btn btn-action btn-sm ms-1" onclick="abrirFormAgente('${a.id}')"><i class="fas fa-edit"></i></button>
+          </td>
+        </tr>`;
+      });
+
+      document.getElementById('pagination-info').innerText = `Mostrando ${pagina.length} de ${lista.length} registros`;
+      renderPaginacion(totalPaginas);
+      actualizarContador();
+    }
+
+    function renderPaginacion(totalPaginas) {
+      const cont = document.getElementById('pagination-controls');
+      cont.innerHTML = '';
+      if (totalPaginas <= 1) return;
+      for (let p = 1; p <= totalPaginas; p++) {
+        cont.innerHTML += `<li class="page-item ${p === paginaActual ? 'active' : ''}">
+          <a class="page-link" href="#" onclick="event.preventDefault(); paginaActual=${p}; renderTabla();">${p}</a>
+        </li>`;
+      }
+    }
+
+    function toggleTodos(cb) {
+      document.querySelectorAll('.ag-check').forEach(el => el.checked = cb.checked);
+      actualizarContador();
+    }
+    function actualizarContador() {
+      document.getElementById('ag-count-sel').innerText = document.querySelectorAll('.ag-check:checked').length;
+    }
+
+    document.getElementById('search-input').addEventListener('keypress', e => { if (e.key === 'Enter') ejecutarBusqueda(); });
+    document.getElementById('ministerio-filter').addEventListener('change', ejecutarBusqueda);
+    document.getElementById('estado-filter').addEventListener('change', ejecutarBusqueda);
+
+    // ---------- Alta / edición (modal) ----------
+    function abrirFormAgente(id) {
+      const esEdicion = !!id;
+      document.getElementById('ag-form-titulo').innerText = esEdicion ? 'Editar agente pastoral' : 'Nuevo agente pastoral';
+      const campos = ['ag-nombres','ag-apellidos','ag-dni','ag-fecha-nac','ag-direccion','ag-celular','ag-correo',
+        'ag-comunidad','ag-fecha-ingreso','ag-capacitacion','ag-responsable','ag-notas'];
+      campos.forEach(c => document.getElementById(c).value = '');
+      document.getElementById('ag-id').value = '';
+      document.getElementById('ag-estado').value = 'ACTIVO';
+
+      if (esEdicion) {
+        const a = agentes.find(x => x.id === id);
+        if (!a) return;
+        document.getElementById('ag-id').value = a.id;
+        document.getElementById('ag-nombres').value = a.nombres || '';
+        document.getElementById('ag-apellidos').value = a.apellidos || '';
+        document.getElementById('ag-dni').value = a.dni || '';
+        document.getElementById('ag-fecha-nac').value = a.fecha_nacimiento || '';
+        document.getElementById('ag-direccion').value = a.direccion || '';
+        document.getElementById('ag-celular').value = a.celular || '';
+        document.getElementById('ag-correo').value = a.correo || '';
+        document.getElementById('ag-comunidad').value = a.comunidad || '';
+        document.getElementById('ag-fecha-ingreso').value = a.fecha_ingreso || '';
+        document.getElementById('ag-ministerio').value = a.ministerio || '';
+        document.getElementById('ag-estado').value = a.estado || 'ACTIVO';
+        document.getElementById('ag-capacitacion').value = a.capacitacion || '';
+        document.getElementById('ag-responsable').value = a.responsable || '';
+        document.getElementById('ag-notas').value = a.notas || '';
+      }
+      panelAgente.show();
+    }
+
+    async function guardarAgente() {
+      const nombres = document.getElementById('ag-nombres').value.trim();
+      const apellidos = document.getElementById('ag-apellidos').value.trim();
+      if (!nombres || !apellidos) { alert('Los nombres y apellidos son obligatorios.'); return; }
+
+      const idExistente = document.getElementById('ag-id').value;
+      const datos = {
+        id: idExistente || siguienteId(),
+        nombres, apellidos,
+        dni: document.getElementById('ag-dni').value.trim(),
+        fecha_nacimiento: document.getElementById('ag-fecha-nac').value,
+        direccion: document.getElementById('ag-direccion').value.trim(),
+        celular: document.getElementById('ag-celular').value.trim(),
+        correo: document.getElementById('ag-correo').value.trim(),
+        comunidad: document.getElementById('ag-comunidad').value.trim(),
+        fecha_ingreso: document.getElementById('ag-fecha-ingreso').value,
+        ministerio: document.getElementById('ag-ministerio').value,
+        estado: document.getElementById('ag-estado').value,
+        capacitacion: document.getElementById('ag-capacitacion').value.trim(),
+        responsable: document.getElementById('ag-responsable').value.trim(),
+        notas: document.getElementById('ag-notas').value.trim()
+      };
+
+      const btn = document.getElementById('btn-guardar-agente');
+      const originalHTML = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> Guardando...`;
+      await new Promise(r => setTimeout(r, 300));
+
+      if (idExistente) {
+        const idx = agentes.findIndex(a => a.id === idExistente);
+        if (idx >= 0) agentes[idx] = datos;
+      } else {
+        agentes.push(datos);
+      }
+      guardarAgentes();
+
+      btn.classList.add('btn-guardado-ok');
+      btn.innerHTML = `<i class="fas fa-check-circle me-2"></i> ¡Guardado!`;
+      await new Promise(r => setTimeout(r, 550));
+
+      btn.classList.remove('btn-guardado-ok');
+      btn.disabled = false;
+      btn.innerHTML = originalHTML;
+      panelAgente.hide();
+      renderTabla();
+    }
+
+    // ---------- Panel de detalle (offcanvas) ----------
+    function isoDisplay(fechaISO) {
+      if (!fechaISO) return '-';
+      const [y, m, d] = fechaISO.split('-');
+      if (!y || !m || !d) return fechaISO;
+      return `${d}/${m}/${y}`;
+    }
+
+    function abrirDetalle(id) {
+      const a = agentes.find(x => x.id === id);
+      if (!a) return;
+      agenteSeleccionadoId = id;
+
+      document.getElementById('mod-head-nombre').innerText = `${a.nombres} ${a.apellidos}`;
+      document.getElementById('det-id').innerText = a.id;
+      document.getElementById('det-ministerio-box').innerText = a.ministerio || '-';
+      document.getElementById('det-estado-box').innerHTML = a.estado === 'ACTIVO'
+        ? '<span class="badge badge-activo">ACTIVO</span>' : '<span class="badge badge-inactivo">INACTIVO</span>';
+
+      document.getElementById('det-nombres').innerText = a.nombres || '';
+      document.getElementById('det-apellidos').innerText = a.apellidos || '';
+      document.getElementById('det-dni').innerText = a.dni || '';
+      document.getElementById('det-fecha-nac').innerText = isoDisplay(a.fecha_nacimiento);
+      document.getElementById('det-direccion').innerText = a.direccion || '';
+      document.getElementById('det-celular').innerText = a.celular || '';
+      document.getElementById('det-correo').innerText = a.correo || '';
+      document.getElementById('det-comunidad').innerText = a.comunidad || '';
+      document.getElementById('det-ministerio').innerText = a.ministerio || '';
+      document.getElementById('det-fecha-ingreso').innerText = isoDisplay(a.fecha_ingreso);
+      document.getElementById('det-capacitacion').innerText = a.capacitacion || '';
+      document.getElementById('det-responsable').innerText = a.responsable || '';
+      document.getElementById('box-notas').value = a.notas || '';
+
+      cancelarEdicion();
+      offcanvasDetalle.show();
+    }
+
+    function habilitarEdicion() {
+      document.body.classList.add('editing-mode');
+      document.querySelectorAll('#panelDetalle .editable-field').forEach(el => el.setAttribute('contenteditable', 'true'));
+      document.getElementById('box-notas').removeAttribute('readonly');
+      document.getElementById('btn-edit-record').classList.add('d-none');
+      document.getElementById('edit-controls').classList.remove('d-none');
+      document.getElementById('edit-controls').classList.add('d-flex');
+    }
+    function cancelarEdicion() {
+      document.body.classList.remove('editing-mode');
+      document.querySelectorAll('#panelDetalle .editable-field').forEach(el => el.removeAttribute('contenteditable'));
+      document.getElementById('box-notas').setAttribute('readonly', true);
+      document.getElementById('btn-edit-record').classList.remove('d-none');
+      document.getElementById('edit-controls').classList.add('d-none');
+      document.getElementById('edit-controls').classList.remove('d-flex');
+      if (agenteSeleccionadoId) abrirDetalle(agenteSeleccionadoId);
+    }
+    function isoFromDisplay(txt) {
+      const m = (txt || '').trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      if (!m) return '';
+      return `${m[3]}-${m[2]}-${m[1]}`;
+    }
+    function guardarCambiosEdicion() {
+      const idx = agentes.findIndex(a => a.id === agenteSeleccionadoId);
+      if (idx < 0) return;
+      const a = agentes[idx];
+      a.nombres = document.getElementById('det-nombres').innerText.trim();
+      a.apellidos = document.getElementById('det-apellidos').innerText.trim();
+      a.dni = document.getElementById('det-dni').innerText.trim();
+      a.fecha_nacimiento = isoFromDisplay(document.getElementById('det-fecha-nac').innerText) || a.fecha_nacimiento;
+      a.direccion = document.getElementById('det-direccion').innerText.trim();
+      a.celular = document.getElementById('det-celular').innerText.trim();
+      a.correo = document.getElementById('det-correo').innerText.trim();
+      a.comunidad = document.getElementById('det-comunidad').innerText.trim();
+      a.ministerio = document.getElementById('det-ministerio').innerText.trim();
+      a.fecha_ingreso = isoFromDisplay(document.getElementById('det-fecha-ingreso').innerText) || a.fecha_ingreso;
+      a.capacitacion = document.getElementById('det-capacitacion').innerText.trim();
+      a.responsable = document.getElementById('det-responsable').innerText.trim();
+      a.notas = document.getElementById('box-notas').value.trim();
+
+      guardarAgentes();
+      cancelarEdicion();
+      renderTabla();
+      document.getElementById('successPdfText').innerText = 'El registro se modificó correctamente.';
+      modalExito.show();
+    }
+
+    function eliminarDesdePanel() {
+      const a = agentes.find(x => x.id === agenteSeleccionadoId);
+      if (!a) return;
+      if (!confirm(`¿Eliminar el registro de "${a.nombres} ${a.apellidos}"? Esta acción no se puede deshacer.`)) return;
+      agentes = agentes.filter(x => x.id !== agenteSeleccionadoId);
+      guardarAgentes();
+      offcanvasDetalle.hide();
+      renderTabla();
+    }
+
+    // ---------- Fichas imprimibles ----------
+    function isoALargo(fechaISO) {
+      if (!fechaISO) return '-------';
+      const meses = ["ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"];
+      const [y, m, d] = fechaISO.split('-').map(Number);
+      if (!y || !m || !d) return '-------';
+      return `${d} DE ${meses[m - 1]} DEL ${y}`;
+    }
+
+    function construirFicha(a) {
+      return `
+        <div class="ficha-agente">
+          <div class="ficha-header">
+            <span>${NOMBRE_PARROQUIA}</span>
+            <span>ID: <u>${a.id}</u></span>
+          </div>
+          <div class="ficha-titulo">FICHA DE REGISTRO DE AGENTE PASTORAL</div>
+
+          <div class="ficha-fila"><div class="ficha-label">NOMBRES Y APELLIDOS</div><div class="ficha-dospuntos">:</div><div class="ficha-valor">${a.nombres||''} ${a.apellidos||''}</div></div>
+          <div class="ficha-fila"><div class="ficha-label">DNI</div><div class="ficha-dospuntos">:</div><div class="ficha-valor">${a.dni||'-------'}</div></div>
+          <div class="ficha-fila"><div class="ficha-label">FECHA DE NACIMIENTO</div><div class="ficha-dospuntos">:</div><div class="ficha-valor">${isoALargo(a.fecha_nacimiento)}</div></div>
+          <div class="ficha-fila"><div class="ficha-label">DIRECCIÓN</div><div class="ficha-dospuntos">:</div><div class="ficha-valor">${a.direccion||'-------'}</div></div>
+          <div class="ficha-fila"><div class="ficha-label">CELULAR / CORREO</div><div class="ficha-dospuntos">:</div><div class="ficha-valor">${a.celular||'-------'} ${a.correo ? '/ ' + a.correo : ''}</div></div>
+          <div class="ficha-fila"><div class="ficha-label">COMUNIDAD / SECTOR</div><div class="ficha-dospuntos">:</div><div class="ficha-valor">${a.comunidad||'-------'}</div></div>
+          <div class="ficha-fila"><div class="ficha-label">MINISTERIO / SERVICIO</div><div class="ficha-dospuntos">:</div><div class="ficha-valor">${a.ministerio||'-------'}</div></div>
+          <div class="ficha-fila"><div class="ficha-label">FECHA DE INGRESO AL SERVICIO</div><div class="ficha-dospuntos">:</div><div class="ficha-valor">${isoALargo(a.fecha_ingreso)}</div></div>
+          <div class="ficha-fila"><div class="ficha-label">CAPACITACIÓN / FORMACIÓN</div><div class="ficha-dospuntos">:</div><div class="ficha-valor">${a.capacitacion||'-------'}</div></div>
+          <div class="ficha-fila"><div class="ficha-label">RESPONSABLE QUE REGISTRA</div><div class="ficha-dospuntos">:</div><div class="ficha-valor">${a.responsable||'-------'}</div></div>
+
+          <div class="ficha-footer">
+            <div>ESTADO: ${a.estado||'-------'}</div>
+          </div>
+          <div class="ficha-firma">
+            <div class="linea"></div>
+            <small>Firma del Agente Pastoral</small>
+          </div>
+        </div>`;
+    }
+
+    function registrarEnHistorial(lista) {
+      const ahora = new Date();
+      const fecha = `${String(ahora.getDate()).padStart(2,'0')}/${String(ahora.getMonth()+1).padStart(2,'0')}/${ahora.getFullYear()} ${String(ahora.getHours()).padStart(2,'0')}:${String(ahora.getMinutes()).padStart(2,'0')}`;
+      lista.forEach(a => historial.unshift({ fecha, nombre: `${a.nombres} ${a.apellidos}`, ministerio: a.ministerio || '-' }));
+      guardarHistorial();
+    }
+
+    function imprimirFichaIndividual() {
+      const a = agentes.find(x => x.id === agenteSeleccionadoId);
+      if (!a) return;
+      document.getElementById('print-area').innerHTML = `<div class="hoja-a4">${construirFicha(a)}</div>`;
+      window.print();
+      registrarEnHistorial([a]);
+    }
+
+    function imprimirSeleccionados() {
+      const ids = Array.from(document.querySelectorAll('.ag-check:checked')).map(el => el.dataset.id);
+      if (ids.length === 0) { alert('Selecciona al menos un agente pastoral para imprimir.'); return; }
+      const seleccionados = ids.map(id => agentes.find(a => a.id === id)).filter(Boolean);
+
+      let html = '';
+      for (let i = 0; i < seleccionados.length; i += 2) {
+        const par = seleccionados.slice(i, i + 2);
+        html += `<div class="hoja-a4">${construirFicha(par[0])}${par[1] ? construirFicha(par[1]) : ''}</div>`;
+      }
+      document.getElementById('print-area').innerHTML = html;
+      window.print();
+      registrarEnHistorial(seleccionados);
+    }
+
+    function renderHistorial() {
+      const tbody = document.getElementById('historial-body');
+      const vacio = document.getElementById('historial-vacio');
+      tbody.innerHTML = '';
+      if (historial.length === 0) { vacio.classList.remove('d-none'); return; }
+      vacio.classList.add('d-none');
+      historial.forEach(h => {
+        tbody.innerHTML += `<tr><td>${h.fecha}</td><td class="fw-semibold">${h.nombre}</td><td class="text-muted small">${h.ministerio}</td></tr>`;
+      });
+    }
+
+    // ---------- Exportar CSV ----------
+    function exportarCSV() {
+      if (agentes.length === 0) { alert('No hay agentes pastorales registrados para exportar.'); return; }
+      const encabezados = ['ID','Nombres','Apellidos','DNI','Fecha Nacimiento','Dirección','Celular','Correo',
+        'Comunidad/Sector','Ministerio','Fecha Ingreso','Estado','Capacitación','Responsable','Notas'];
+      const filas = agentes.map(a => [a.id, a.nombres, a.apellidos, a.dni, a.fecha_nacimiento, a.direccion,
+        a.celular, a.correo, a.comunidad, a.ministerio, a.fecha_ingreso, a.estado, a.capacitacion, a.responsable, a.notas]);
+      const csv = [encabezados, ...filas]
+        .map(fila => fila.map(v => `"${(v ?? '').toString().replace(/"/g, '""')}"`).join(','))
+        .join('\n');
+      const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'agentes_pastorales.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // ---------- Inicio ----------
+    document.addEventListener('DOMContentLoaded', () => {
+      cargarDatos();
+      panelAgente = new bootstrap.Modal(document.getElementById('panelAgente'));
+      modalMinisterios = new bootstrap.Modal(document.getElementById('modalMinisterios'));
+      offcanvasDetalle = new bootstrap.Offcanvas(document.getElementById('panelDetalle'));
+      modalExito = new bootstrap.Modal(document.getElementById('successPdfModal'));
+
+      poblarSelectsMinisterio();
+
+      if (localStorage.getItem('sidebarCollapsed') === 'true') {
+        document.getElementById('main-sidebar').classList.add('collapsed');
+      }
+
+      renderTabla();
+      renderHistorial();
+    });
+  </script>
+</body>
+</html>
