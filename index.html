@@ -96,11 +96,11 @@
     // ====== Configuración de Supabase ======
     const SUPABASE_URL = "https://oajjqfgqbxyquzjunflk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_S0sHD-fWe3kG70fE3SdvSg_c5FxEOY0";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // Si ya había una sesión activa, saltamos directo al portal
     (async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session } } = await supabaseClient.auth.getSession();
       if (session) location.href = 'portal.html';
     })();
 
@@ -118,7 +118,7 @@
       btnLogin.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Verificando...`;
       errorMsg.classList.add('d-none');
 
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabaseClient.auth.signInWithPassword({
         email: correo,
         password: clave
       });
