@@ -460,15 +460,6 @@
         overflow-x: auto;
     }
     
-    .search-box {
-        flex-direction: column;
-    }
-    
-    .search-box > div,
-    .search-box button {
-        width: 100% !important;
-    }
-    
     /* Ajustar offcanvas en móvil */
     .offcanvas-custom {
         width: 100% !important;
@@ -512,6 +503,62 @@
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(29, 133, 72, 0.3);
     }
+
+    /* ===================== FILTROS Y LIBROS (Bautismos / Confirmación) ===================== */
+    .search-box { margin-bottom: 1rem !important; }
+    .search-wrap { position: relative; }
+    .search-wrap .fa-search { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
+    .search-wrap .form-control-custom { padding-left: 2.6rem; padding-right: 2.6rem; }
+    .search-clear { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); border: none; background: rgba(0,34,102,.08); color: var(--brand-navy); width: 26px; height: 26px; border-radius: 50%; font-size: .7rem; }
+    .search-clear:hover { background: var(--brand-navy); color: #fff; }
+
+    .btn-filtros { background: #f1f3f7; border: 2px solid transparent; border-radius: 12px; padding: .75rem 1.1rem; font-weight: 700; color: var(--brand-navy); display: inline-flex; align-items: center; white-space: nowrap; transition: all .2s; }
+    .btn-filtros:hover, .btn-filtros.open { background: rgba(0,34,102,.09); }
+    .btn-filtros .badge { background: var(--brand-accent); margin-left: .5rem; }
+
+    .filtros-panel { padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+    .select-custom { background-color: #f1f3f7; border: 2px solid transparent; border-radius: 12px; padding: .6rem 2.2rem .6rem .9rem; font-size: .9rem; font-weight: 500; }
+    .select-custom:focus { background-color: #fff; border-color: var(--brand-accent); box-shadow: 0 0 0 4px rgba(0,85,255,.1); }
+
+    .chip-opt { border: 2px solid transparent; background: #f1f3f7; color: var(--text-muted); border-radius: 999px; padding: .4rem .9rem; font-size: .82rem; font-weight: 600; transition: all .2s; }
+    .chip-opt:hover { background: rgba(0,34,102,.08); color: var(--brand-navy); }
+    .chip-opt.active { background: var(--brand-navy); color: #fff; }
+    .chip-opt .n { opacity: .7; font-weight: 500; margin-left: .3rem; }
+    .chip-atajo { border: 1px dashed rgba(0,34,102,.3); background: transparent; color: var(--brand-navy); border-radius: 999px; padding: .2rem .7rem; font-size: .72rem; font-weight: 600; }
+    .chip-atajo:hover { background: rgba(0,34,102,.08); }
+
+    .chip-activo { display: inline-flex; align-items: center; gap: .45rem; background: #e9effd; color: var(--brand-navy); border-radius: 999px; padding: .3rem .4rem .3rem .85rem; font-size: .78rem; font-weight: 600; border: 1px solid rgba(0,85,255,.15); }
+    .chip-activo button { border: none; background: rgba(0,34,102,.12); color: var(--brand-navy); width: 18px; height: 18px; border-radius: 50%; font-size: .6rem; line-height: 1; padding: 0; }
+    .chip-activo button:hover { background: var(--brand-navy); color: #fff; }
+
+    /* Buscador: escritorio en una fila, móvil en dos (texto arriba; año + Buscar + Filtros abajo) */
+    .search-box .sb-main { flex: 1 1 280px; min-width: 0; }
+    .search-box .sb-year { flex: 0 0 120px; }
+    .search-box .sb-buscar { width: auto; padding-left: 1.75rem; padding-right: 1.75rem; }
+    @media (max-width: 992px) {
+      .search-box { padding: 1rem; gap: .75rem; }
+      .search-box .sb-main { flex: 1 1 100%; }
+      .search-box .sb-year { flex: 0 0 96px; }
+      .search-box .sb-buscar { flex: 1 1 auto; }
+      .btn-filtros { padding: .75rem .95rem; }
+      .filtros-panel { padding: 1rem; }
+    }
+
+    /* Libros: una sola fila de pills, con scroll horizontal si hay muchos */
+    .libros-row { display: flex; align-items: flex-start; gap: .6rem; margin-bottom: .9rem; }
+    .libros-label { flex: 0 0 auto; padding-top: .55rem; font-size: .7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; white-space: nowrap; }
+    .libros-strip { flex: 1 1 auto; min-width: 0; display: flex; flex-wrap: wrap; gap: .4rem; max-height: 6.8rem; overflow-y: auto; overflow-x: hidden; padding: .2rem .1rem; scrollbar-width: thin; }
+    .libro-pill { flex: 0 0 auto; display: inline-flex; align-items: center; gap: .4rem; border: 1.5px solid transparent; background: var(--surface); color: var(--brand-navy); border-radius: 999px; padding: .28rem .75rem; font-size: .78rem; font-weight: 700; box-shadow: 0 1px 4px rgba(0,0,0,.06); cursor: pointer; transition: all .15s; }
+    .libro-pill:hover { border-color: rgba(0,34,102,.25); }
+    .libro-pill.active { background: var(--brand-navy); color: #fff; }
+    .libro-pill .n { font-weight: 500; opacity: .65; font-size: .72rem; }
+    .libro-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: #f0a500; }
+    .libro-pill .dot.ok { background: #1b8f4c; }
+
+    mark { background: #fff0a8; color: inherit; padding: 0 1px; border-radius: 3px; }
+    .empty-state { background: var(--surface); border-radius: 20px; padding: 3rem 1.5rem; text-align: center; }
+    .empty-state i.big { font-size: 2.5rem; color: #c3cad8; }
+    .badge-rev { font-size: .65rem; letter-spacing: .5px; }
 
     /* ===================== MÓDULO CANDIDATOS: estilos ===================== */
     .badge-pendiente{background:#fff4e5;color:#b26a00;border:1px solid #ffcc80;}
@@ -679,22 +726,111 @@
         <div id="tab-busqueda" class="vista-app">
           <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
             <h2 class="fw-bold m-0" id="main-title">Partidas de Bautismo</h2>
-            <a href="#" id="btn-open-gsheet" target="_blank" class="btn-sheet shadow-sm">
-              <i class="fas fa-file-excel"></i> <span class="d-none d-md-inline">Abrir Documento Original</span>
-            </a>
+            <div class="d-flex gap-2 align-items-center">
+              <button class="btn btn-action py-2" id="btn-refrescar" onclick="cargarDatos(true, true)" title="Volver a leer los registros desde Google Sheets">
+                <i class="fas fa-rotate me-1"></i> <span class="d-none d-md-inline">Actualizar</span>
+              </button>
+              <a href="#" id="btn-open-gsheet" target="_blank" class="btn-sheet shadow-sm">
+                <i class="fas fa-file-excel"></i> <span class="d-none d-md-inline">Abrir Documento Original</span>
+              </a>
+            </div>
           </div>
           
           <!-- Caja de Búsqueda -->
           <div class="search-box glass-card">
-            <div class="flex-grow-1">
-              <label class="detail-label">Nombre, Padres o ID del titular</label>
-              <input type="text" id="search-input" class="form-control form-control-custom" placeholder="Ej: Juan Perez o B54-0001">
+            <div class="sb-main">
+              <label class="detail-label">Nombre, apellidos, padres o ID del titular</label>
+              <div class="search-wrap">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input" class="form-control form-control-custom" autocomplete="off"
+                       placeholder="Ej: Juan Perez o B54-00001">
+                <button type="button" class="search-clear d-none" id="search-clear" onclick="limpiarTexto()" title="Borrar búsqueda"><i class="fas fa-times"></i></button>
+              </div>
             </div>
-            <div style="width: 150px;">
+            <div class="sb-year">
               <label class="detail-label">Año</label>
               <input type="number" id="year-filter" class="form-control form-control-custom" placeholder="2020">
             </div>
-            <button onclick="ejecutarBusqueda()" class="btn btn-primary-custom px-4" style="width: auto;">Buscar</button>
+            <button type="button" onclick="buscarDesdeInputs()" class="btn btn-primary-custom sb-buscar">Buscar</button>
+            <button type="button" class="btn-filtros" id="btn-toggle-filtros" onclick="toggleFiltros()" title="Filtros">
+              <i class="fas fa-sliders-h"></i><span class="d-none d-sm-inline ms-2">Filtros</span> <span class="badge rounded-pill d-none" id="filtros-count">0</span>
+            </button>
+          </div>
+
+          <!-- Panel de filtros -->
+          <div id="filtros-panel" class="filtros-panel glass-card d-none">
+            <div class="mb-3">
+              <label class="detail-label">Estado de revisión</label>
+              <div class="d-flex flex-wrap gap-2" id="f-estado-chips"></div>
+            </div>
+            <div class="row g-3">
+              <div class="col-6 col-md-3">
+                <label class="detail-label">Libro</label>
+                <select id="f-libro" class="form-select select-custom" onchange="setFiltro('libro', this.value)"></select>
+              </div>
+              <div class="col-6 col-md-3">
+                <label class="detail-label">Fecha desde</label>
+                <input type="date" id="f-desde" class="form-control form-control-custom py-2" onchange="setFiltro('desde', this.value)">
+              </div>
+              <div class="col-6 col-md-3">
+                <label class="detail-label">Fecha hasta</label>
+                <input type="date" id="f-hasta" class="form-control form-control-custom py-2" onchange="setFiltro('hasta', this.value)">
+              </div>
+              <div class="col-12">
+                <span class="small text-muted me-1">Atajos:</span>
+                <button type="button" class="chip-atajo me-1" onclick="atajoFecha('anio-actual')">Este año</button>
+                <button type="button" class="chip-atajo me-1" onclick="atajoFecha('12m')">Últimos 12 meses</button>
+                <button type="button" class="chip-atajo" onclick="atajoFecha('limpiar')">Quitar fechas</button>
+              </div>
+              <div class="col-6 col-md-3 d-none" id="wrap-f-catequesis">
+                <label class="detail-label">Catequesis</label>
+                <select id="f-catequesis" class="form-select select-custom" onchange="setFiltro('catequesis', this.value)"></select>
+              </div>
+              <div class="col-6 col-md-3">
+                <label class="detail-label">Ordenar por</label>
+                <select id="f-orden" class="form-select select-custom" onchange="setFiltro('orden', this.value)">
+                  <option value="original">Orden del archivo</option>
+                  <option value="libro">Libro / Foja / Partida</option>
+                  <option value="nombre">Apellidos (A-Z)</option>
+                  <option value="fecha-desc">Fecha: más reciente primero</option>
+                  <option value="fecha-asc">Fecha: más antigua primero</option>
+                </select>
+              </div>
+              <div class="col-6 col-md-3">
+                <label class="detail-label">Filas por página</label>
+                <select id="f-filas" class="form-select select-custom" onchange="setFiltro('filas', this.value)">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-3 d-flex align-items-end">
+                <div class="form-check form-switch mb-2">
+                  <input class="form-check-input" type="checkbox" id="f-nota" onchange="setFiltro('nota', this.checked)">
+                  <label class="form-check-label small fw-semibold" for="f-nota">Solo con nota marginal</label>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-end mt-3">
+              <button type="button" class="btn btn-sm btn-light border rounded-pill fw-bold px-3" onclick="limpiarFiltros()">
+                <i class="fas fa-eraser me-1"></i> Limpiar filtros
+              </button>
+            </div>
+          </div>
+
+          <!-- Filtros activos -->
+          <div id="chips-activos" class="d-flex flex-wrap align-items-center gap-2 mb-3 d-none"></div>
+
+          <!-- Libros presentes en los resultados -->
+          <div class="libros-row">
+            <div class="libros-label"><i class="fas fa-book"></i><span class="d-none d-sm-inline ms-1" id="libros-label">Libros</span></div>
+            <div class="libros-strip" id="libros-strip"></div>
+          </div>
+
+          <!-- Contador de resultados -->
+          <div class="d-flex justify-content-between align-items-center mb-2 px-1">
+            <div class="fw-bold" id="result-count" style="color:var(--brand-navy);"></div>
           </div>
 
           <!-- Tabla -->
@@ -703,11 +839,22 @@
             <p class="mt-3 fw-semibold text-muted">Consultando archivos...</p>
           </div>
 
+          <div id="empty-state" class="empty-state shadow-sm d-none">
+            <i class="fas fa-folder-open big mb-3 d-block"></i>
+            <h5 class="fw-bold mb-1">No encontramos registros</h5>
+            <p class="text-muted small mb-3">Prueba con menos palabras (por ejemplo, solo el apellido) o quita algún filtro del panel.</p>
+            <button class="btn btn-action" onclick="limpiarTodo()"><i class="fas fa-eraser me-1"></i> Limpiar búsqueda y filtros</button>
+          </div>
+
           <div id="table-container" class="table-container shadow-sm d-none">
             <table class="table mb-0 table-hover">
               <thead id="table-head"></thead>
               <tbody id="results-body"></tbody>
             </table>
+          </div>
+          <div id="wrap-cargar-mas" class="text-center mt-3 d-none">
+            <button type="button" class="btn btn-action" id="btn-cargar-mas" onclick="cargarMas()"><i class="fas fa-angles-down me-1"></i> Cargar más registros</button>
+            <div class="small text-muted mt-1" id="txt-cargar-mas"></div>
           </div>
           <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3 px-3 pb-3">
             <small class="text-muted fw-semibold mb-2 mb-md-0" id="pagination-info">Mostrando 0 de 0 registros</small>
@@ -1118,7 +1265,19 @@
     let moduloActual = 'bautismo';
     let datosActuales = [];
     let paginaActual = 1;
-    const filasPorPagina = 10;
+    let filasPorPagina = 10;
+
+    // Datos completos por módulo (se leen una vez y se filtran en el navegador)
+    let datosBase = [];
+    let tokensActivos = [];
+    const FILTROS_INICIALES = { texto: '', hoja: '', estado: '', libro: '', anio: '', desde: '', hasta: '', catequesis: '', nota: false, orden: 'original', filas: 10 };
+    let filtros = { ...FILTROS_INICIALES };
+    let estadosDisponibles = new Map();
+    let librosDisponibles = [];
+    let hayMas = false, cargandoMas = false, forzarListaLibros = false;
+    const loteActual = () => filtros.hoja ? 100 : 30;   // registros por petición
+    // Lista completa de libros según el servidor: undefined = aún no cargada, false = el servidor no la ofrece, array = lista
+    const librosSistema = { bautismo: undefined, confirmacion: undefined };
     
     let modalConflicto; 
     let sidebarDetalle;
@@ -1228,14 +1387,442 @@
       moduloDatos = mod;
       document.getElementById('btn-open-gsheet').href = (mod === 'bautismo') ? SHEET_BAUTISMO : SHEET_CONFIRMACION;
       document.getElementById('btn-open-gsheet').classList.toggle('d-none', Backend.modo() === 'supabase');
-      document.getElementById('search-input').value = "";
-      document.getElementById('year-filter').value = "";
       document.getElementById('main-title').innerText = (mod === 'bautismo') ? "Registros de Bautismo" : "Registros de Confirmación";
+      document.getElementById('wrap-f-catequesis').classList.toggle('d-none', mod !== 'confirmacion');
+      resetFiltrosEstado();
       cambiarPestaña('tab-busqueda');
-      realizarPeticionBusqueda("", "");
+      cargarDatos(false);
     }
 
-    function mostrarResultados(res) {
+    // ===================== BÚSQUEDA, FILTROS Y LIBROS (Bautismos / Confirmación) =====================
+    const norm = s => (s == null ? '' : String(s)).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    // Igual que norm pero conserva el largo del texto (para poder resaltar coincidencias)
+    const normPos = s => String(s).split('').map(c => { const n = c.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); return (n[0] || c).toLowerCase(); }).join('');
+    const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const fmtN = n => Number(n).toLocaleString('es-PE');
+
+    // "18/01/2019" (o "2019-01-18") -> 20190118
+    function parseFecha(s) {
+      if (!s) return 0;
+      s = String(s).trim();
+      let m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+      if (m) return (+m[3]) * 10000 + (+m[2]) * 100 + (+m[1]);
+      m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (m) return (+m[1]) * 10000 + (+m[2]) * 100 + (+m[3]);
+      return 0;
+    }
+
+    function resaltar(texto, tokens) {
+      const t = String(texto == null ? '' : texto);
+      if (!tokens.length || !t) return esc(t);
+      const n = normPos(t);
+      const marcas = new Array(t.length).fill(false);
+      tokens.forEach(tok => {
+        let i = n.indexOf(tok);
+        while (i !== -1) {
+          for (let k = i; k < i + tok.length; k++) marcas[k] = true;
+          i = n.indexOf(tok, i + tok.length);
+        }
+      });
+      let out = '', abierto = false;
+      for (let k = 0; k < t.length; k++) {
+        if (marcas[k] && !abierto) { out += '<mark>'; abierto = true; }
+        if (!marcas[k] && abierto) { out += '</mark>'; abierto = false; }
+        out += esc(t[k]);
+      }
+      return abierto ? out + '</mark>' : out;
+    }
+
+    function prepararRegistro(item, mod) {
+      const r = { ...item, libro: item.nro_libro };
+      const fecha = (mod === 'confirmacion') ? (r.fecha_confirmacion || r.fecha_bautizo) : (r.fecha_bautizo || r.fecha_confirmacion);
+      r._fecha = parseFecha(fecha);
+      r._anio = r._fecha ? Math.floor(r._fecha / 10000) : 0;
+      r._estadoLabel = (r.estado || '').toString().trim();
+      r._estado = norm(r._estadoLabel) || '__vacio';
+      r._catequesis = (r.catequesis || '').toString().trim();
+      r._tieneNota = !!((r.nota_marginal || '').toString().trim());
+      r._libroKey = (r.libro == null ? '' : String(r.libro).trim());
+      return r;
+    }
+
+    // La búsqueda la hace el servidor (recorre todos los libros / pestañas del Sheets).
+    // Los filtros del panel solo refinan lo que el servidor devolvió.
+    let _peticion = 0, _abort = null;
+    const cacheInicial = {}; // solo la carga inicial (sin texto ni año) de cada módulo
+    async function cargarDatos(mantenerPagina, omitirCache) {
+      const mod = moduloActual;
+      const id = ++_peticion;
+      if (_abort) _abort.abort();           // si había una búsqueda anterior en curso, se descarta
+      _abort = new AbortController();
+      const esInicial = !filtros.texto && !filtros.anio && !filtros.hoja;
+      if (omitirCache) { librosSistema[mod] = undefined; forzarListaLibros = true; }
+      if (esInicial && !omitirCache && cacheInicial[mod]) {
+        datosBase = cacheInicial[mod].datos;
+        hayMas = cacheInicial[mod].hayMas;
+        document.getElementById('loading-indicator').classList.add('d-none');
+        construirFacetas();
+        aplicarFiltros(!!mantenerPagina);
+        if (librosSistema[mod] === undefined) cargarLibrosSistema(false);
+        return;
+      }
+      document.getElementById('loading-indicator').classList.remove('d-none');
+      document.getElementById('table-container').classList.add('d-none');
+      document.getElementById('empty-state').classList.add('d-none');
+      document.getElementById('btn-refrescar').disabled = true;
+      try {
+        const data = await Backend.llamar(moduloDatos, { accion: 'buscar', termino: filtros.texto, anio: filtros.anio, libro: filtros.hoja, desde: 0, limite: loteActual() });
+        if (data.success === false) throw new Error(data.message);
+        if (id === _peticion && mod === moduloActual) {
+          datosBase = (data.data || []).map(r => prepararRegistro(r, mod));
+          hayMas = data.hay_mas === true;
+          if (esInicial) cacheInicial[mod] = { datos: datosBase, hayMas: hayMas };
+          construirFacetas();
+          aplicarFiltros(!!mantenerPagina);
+        }
+      } catch (e) {
+        if (e.name === 'AbortError') return;
+        console.error(e);
+        if (id === _peticion && mod === moduloActual) {
+          document.getElementById('result-count').innerHTML = '<span class="text-danger"><i class="fas fa-triangle-exclamation me-1"></i>No se pudo conectar con el servidor. Pulsa "Actualizar" para reintentar.</span>';
+        }
+      }
+      if (id === _peticion) {
+        document.getElementById('loading-indicator').classList.add('d-none');
+        document.getElementById('btn-refrescar').disabled = false;
+        if (librosSistema[mod] === undefined) cargarLibrosSistema(false);
+      }
+    }
+
+    // Lista de TODOS los libros (pestañas) con su conteo; la entrega el Apps Script (acción 'listar_libros')
+    function normalizarLibro(x) {
+      const hoja = String((x && (x.hoja || x.nombre)) || (Array.isArray(x) ? x[0] : '') || '').trim();
+      const total = +((x && (x.total != null ? x.total : x.n)) ?? (Array.isArray(x) ? x[1] : 0)) || 0;
+      const rest = hoja.replace(/^libro(conf)?[_\s-]*/i, '');
+      const etiqueta = /^libroconf/i.test(hoja) ? `Conf. ${rest}` : `Libro ${rest || hoja}`;
+      return { hoja, total, etiqueta };
+    }
+
+    async function cargarLibrosSistema(forzar) {
+      const mod = moduloActual;
+      if (!forzar && librosSistema[mod] !== undefined) { renderLibros(); return; }
+      librosSistema[mod] = false;           // evita pedirla dos veces a la vez
+      try {
+        const d = await Backend.llamar(moduloDatos, { accion: 'listar_libros', forzar: forzarListaLibros });
+        forzarListaLibros = false;
+        if (d && d.success && Array.isArray(d.data) && d.data.length) {
+          librosSistema[mod] = d.data.map(normalizarLibro).filter(l => l.hoja)
+            .sort((a, b) => a.hoja.localeCompare(b.hoja, 'es', { numeric: true }));
+        }
+      } catch (e) { console.warn('El servidor no entregó la lista de libros', e); }
+      if (mod === moduloActual) renderLibros();
+    }
+
+    function elegirHoja(hoja) {
+      filtros.hoja = (filtros.hoja === hoja) ? '' : hoja;
+      filtros.libro = '';
+      sincronizarControles();
+      cargarDatos(false);
+    }
+
+
+    // Pide el siguiente lote de coincidencias y lo agrega a los ya cargados
+    async function cargarMas() {
+      if (!hayMas || cargandoMas) return;
+      cargandoMas = true;
+      const mod = moduloActual, id = _peticion;
+      const esInicial = !filtros.texto && !filtros.anio && !filtros.hoja;
+      const btn = document.getElementById('btn-cargar-mas');
+      const htmlBtn = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Cargando...';
+      try {
+        const data = await Backend.llamar(moduloDatos, { accion: 'buscar', termino: filtros.texto, anio: filtros.anio, libro: filtros.hoja, desde: datosBase.length, limite: loteActual() });
+        if (data.success === false) throw new Error(data.message);
+        if (id === _peticion && mod === moduloActual) {          // si mientras tanto cambió la búsqueda, se descarta
+          datosBase = datosBase.concat((data.data || []).map(r => prepararRegistro(r, mod)));
+          hayMas = data.hay_mas === true;
+          if (esInicial) cacheInicial[mod] = { datos: datosBase, hayMas: hayMas };
+          construirFacetas();
+          aplicarFiltros(true);
+        }
+      } catch (e) {
+        console.error(e);
+        alert('No se pudieron cargar más registros. Intenta de nuevo.');
+      }
+      cargandoMas = false;
+      btn.disabled = false;
+      btn.innerHTML = htmlBtn;
+    }
+
+    function actualizarCargarMas() {
+      const cont = document.getElementById('wrap-cargar-mas');
+      cont.classList.toggle('d-none', !hayMas);
+      if (hayMas) document.getElementById('txt-cargar-mas').innerText = `Hay más registros. Ya se cargaron ${fmtN(datosBase.length)}.`;
+    }
+
+    function buscarDesdeInputs() {
+      filtros.texto = document.getElementById('search-input').value.trim();
+      filtros.anio = document.getElementById('year-filter').value.trim();
+      cargarDatos(false);
+    }
+
+    function ordenNatural(a, b) {
+      const na = parseFloat(a), nb = parseFloat(b);
+      if (!isNaN(na) && !isNaN(nb) && na !== nb) return na - nb;
+      return String(a).localeCompare(String(b), 'es', { numeric: true });
+    }
+
+    function construirFacetas() {
+      // Estados (con conteo)
+      estadosDisponibles = new Map();
+      const libros = new Map();
+      const anios = new Set();
+      const catequesis = new Set();
+      datosBase.forEach(r => {
+        const e = estadosDisponibles.get(r._estado) || { label: r._estadoLabel || 'Sin estado', n: 0 };
+        e.n++; estadosDisponibles.set(r._estado, e);
+
+        const l = libros.get(r._libroKey) || { libro: r._libroKey, n: 0, rev: 0, min: 0, max: 0 };
+        l.n++;
+        if (r._estado === 'revisado') l.rev++;
+        if (r._anio) { l.min = l.min ? Math.min(l.min, r._anio) : r._anio; l.max = Math.max(l.max, r._anio); anios.add(r._anio); }
+        libros.set(r._libroKey, l);
+        if (r._catequesis) catequesis.add(r._catequesis);
+      });
+      librosDisponibles = Array.from(libros.values()).sort((a, b) => ordenNatural(a.libro, b.libro));
+
+      // Selects
+      const selLibro = document.getElementById('f-libro');
+      selLibro.innerHTML = '<option value="">Todos los libros</option>' +
+        librosDisponibles.map(l => `<option value="${esc(l.libro)}">Libro ${esc(l.libro || 's/n')} (${fmtN(l.n)})</option>`).join('');
+      const selCat = document.getElementById('f-catequesis');
+      selCat.innerHTML = '<option value="">Todas</option>' +
+        Array.from(catequesis).sort((a, b) => a.localeCompare(b, 'es', { numeric: true })).map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+
+      // Si un filtro guardado ya no existe en los datos (p. ej. tras actualizar), se descarta
+      if (filtros.libro && !libros.has(filtros.libro)) filtros.libro = '';
+      if (filtros.estado && !estadosDisponibles.has(filtros.estado)) filtros.estado = '';
+      if (filtros.catequesis && !catequesis.has(filtros.catequesis)) filtros.catequesis = '';
+      sincronizarControles();
+      renderChipsEstado();
+    }
+
+    function sincronizarControles(incluirBusqueda) {
+      if (incluirBusqueda) {
+        document.getElementById('search-input').value = filtros.texto;
+        document.getElementById('year-filter').value = filtros.anio;
+        document.getElementById('search-clear').classList.toggle('d-none', !filtros.texto);
+      }
+      document.getElementById('f-libro').value = filtros.libro;
+      document.getElementById('f-desde').value = filtros.desde;
+      document.getElementById('f-hasta').value = filtros.hasta;
+      document.getElementById('f-catequesis').value = filtros.catequesis;
+      document.getElementById('f-orden').value = filtros.orden;
+      document.getElementById('f-filas').value = String(filtros.filas);
+      document.getElementById('f-nota').checked = filtros.nota;
+    }
+
+    function renderChipsEstado() {
+      const cont = document.getElementById('f-estado-chips');
+      const total = datosBase.length;
+      let html = `<button type="button" class="chip-opt ${filtros.estado === '' ? 'active' : ''}" onclick="setFiltro('estado','')">Todos<span class="n">${fmtN(total)}</span></button>`;
+      // Revisado y En revisión primero, luego cualquier otro valor que exista
+      const claves = Array.from(estadosDisponibles.keys()).sort((a, b) => {
+        const p = k => k === 'revisado' ? 0 : (k.startsWith('en revision') ? 1 : (k === '__vacio' ? 3 : 2));
+        return p(a) - p(b);
+      });
+      claves.forEach(k => {
+        const e = estadosDisponibles.get(k);
+        html += `<button type="button" class="chip-opt ${filtros.estado === k ? 'active' : ''}" onclick="setFiltro('estado','${esc(k)}')">${esc(e.label)}<span class="n">${fmtN(e.n)}</span></button>`;
+      });
+      cont.innerHTML = html;
+    }
+
+    function renderLibros() {
+      const strip = document.getElementById('libros-strip');
+      const label = document.getElementById('libros-label');
+      const sis = librosSistema[moduloActual];
+
+      if (Array.isArray(sis)) {
+        // Lista completa del sistema, con el conteo de cada libro
+        const totalSis = sis.reduce((a, l) => a + l.total, 0);
+        label.innerText = `Libros (${sis.length})`;
+        let html = `<button type="button" class="libro-pill ${filtros.hoja === '' ? 'active' : ''}" onclick="elegirHoja('')" title="Todos los libros">Todos <span class="n">${fmtN(totalSis)}</span></button>`;
+        sis.forEach(l => {
+          html += `<button type="button" class="libro-pill ${filtros.hoja === l.hoja ? 'active' : ''}" onclick="elegirHoja('${esc(l.hoja)}')" title="${esc(l.hoja)}: ${fmtN(l.total)} registros">${esc(l.etiqueta)} <span class="n">${fmtN(l.total)}</span></button>`;
+        });
+        strip.innerHTML = html;
+        return;
+      }
+
+      // Respaldo: libros presentes en los resultados cargados
+      const total = datosBase.length;
+      label.innerText = 'Libros';
+      if (!total) { strip.innerHTML = '<span class="small text-muted">Sin resultados</span>'; return; }
+      let html = `<button type="button" class="libro-pill ${filtros.libro === '' ? 'active' : ''}" onclick="setFiltro('libro','')" title="Todos los libros de estos resultados">Todos <span class="n">${fmtN(total)}</span></button>`;
+      librosDisponibles.forEach(l => {
+        const pct = l.n ? Math.round((l.rev / l.n) * 100) : 0;
+        const rango = l.min ? (l.min === l.max ? `${l.min}` : `${l.min}–${l.max}`) : 'sin fechas';
+        html += `<button type="button" class="libro-pill ${filtros.libro === l.libro ? 'active' : ''}" onclick="setFiltro('libro','${esc(l.libro)}')" title="Libro ${esc(l.libro || 's/n')}: ${fmtN(l.n)} registros · ${rango} · ${pct}% revisado">
+          <span class="dot ${pct === 100 ? 'ok' : ''}"></span>Libro ${esc(l.libro || 's/n')} <span class="n">${fmtN(l.n)}</span></button>`;
+      });
+      strip.innerHTML = html;
+    }
+
+    function aplicarFiltros(mantenerPagina) {
+      const f = filtros;
+      tokensActivos = norm(f.texto).split(/\s+/).filter(Boolean);
+      const desde = f.desde ? +f.desde.replace(/-/g, '') : 0;
+      const hasta = f.hasta ? +f.hasta.replace(/-/g, '') : 99999999;
+      const usaFecha = !!(f.desde || f.hasta);
+
+      let out = datosBase.filter(r => {
+        if (f.estado !== '' && r._estado !== f.estado) return false;
+        if (f.libro !== '' && r._libroKey !== f.libro) return false;
+        if (usaFecha && (!r._fecha || r._fecha < desde || r._fecha > hasta)) return false;
+        if (f.catequesis !== '' && r._catequesis !== f.catequesis) return false;
+        if (f.nota && !r._tieneNota) return false;
+        return true;
+      });
+
+      if (f.orden === 'libro') {
+        out = out.slice().sort((a, b) => ordenNatural(a._libroKey, b._libroKey) || ordenNatural(a.foja, b.foja) || ordenNatural(a.numero, b.numero));
+      } else if (f.orden === 'nombre') {
+        const kn = r => (r._ns === undefined ? (r._ns = norm((r.apellidos || '') + ' ' + (r.nombres || r.nombre_completo || ''))) : r._ns);
+        out = out.slice().sort((a, b) => { const x = kn(a), y = kn(b); return x < y ? -1 : (x > y ? 1 : 0); });
+      } else if (f.orden === 'fecha-desc') {
+        out = out.slice().sort((a, b) => (!a._fecha) - (!b._fecha) || b._fecha - a._fecha);
+      } else if (f.orden === 'fecha-asc') {
+        out = out.slice().sort((a, b) => (!a._fecha) - (!b._fecha) || a._fecha - b._fecha);
+      }
+
+      datosActuales = out;
+      filasPorPagina = +f.filas || 10;
+      if (!mantenerPagina) paginaActual = 1;
+      const totalPag = Math.max(1, Math.ceil(out.length / filasPorPagina));
+      if (paginaActual > totalPag) paginaActual = totalPag;
+
+      renderLibros();
+      renderChipsEstado();
+      renderChipsActivos();
+      renderContador();
+      renderTabla();
+      actualizarCargarMas();
+    }
+
+    function renderContador() {
+      const n = datosActuales.length, t = datosBase.length;
+      const hayFiltro = n !== t;
+      document.getElementById('result-count').innerHTML =
+        `${fmtN(n)} ${n === 1 ? 'resultado' : 'resultados'}` + (hayMas ? ' <span class="text-muted fw-semibold">· hay más sin cargar</span>' : '') + (hayFiltro ? ` <span class="text-muted fw-semibold">de ${fmtN(t)} encontrados</span>` : '');
+    }
+
+    function etiquetaFiltros() {
+      const f = filtros, lista = [];
+      if (f.texto) lista.push({ k: 'texto', t: `Texto: “${f.texto}”` });
+      if (f.estado) lista.push({ k: 'estado', t: `Estado: ${(estadosDisponibles.get(f.estado) || {}).label || 'Sin estado'}` });
+      if (f.hoja) { const sis = librosSistema[moduloActual]; const l = Array.isArray(sis) && sis.find(x => x.hoja === f.hoja); lista.push({ k: 'hoja', t: l ? l.etiqueta : f.hoja }); }
+      if (f.libro) lista.push({ k: 'libro', t: `Libro ${f.libro}` });
+      if (f.anio) lista.push({ k: 'anio', t: `Año ${f.anio}` });
+      if (f.desde) lista.push({ k: 'desde', t: `Desde ${isoDisplay(f.desde)}` });
+      if (f.hasta) lista.push({ k: 'hasta', t: `Hasta ${isoDisplay(f.hasta)}` });
+      if (f.catequesis) lista.push({ k: 'catequesis', t: `Catequesis: ${f.catequesis}` });
+      if (f.nota) lista.push({ k: 'nota', t: 'Con nota marginal' });
+      return lista;
+    }
+
+    function renderChipsActivos() {
+      const lista = etiquetaFiltros();
+      const cont = document.getElementById('chips-activos');
+      cont.classList.toggle('d-none', lista.length === 0);
+      cont.innerHTML = lista.map(c => `<span class="chip-activo">${esc(c.t)}<button type="button" onclick="quitarFiltro('${c.k}')" title="Quitar"><i class="fas fa-times"></i></button></span>`).join('') +
+        (lista.length > 1 ? `<button type="button" class="btn btn-sm btn-link text-decoration-none fw-bold p-0 ms-1" onclick="limpiarTodo()">Limpiar todo</button>` : '');
+      // Contador del botón "Filtros" (el texto ya está visible en el buscador)
+      const nPanel = lista.filter(c => c.k !== 'texto').length;
+      const badge = document.getElementById('filtros-count');
+      badge.innerText = nPanel;
+      badge.classList.toggle('d-none', nPanel === 0);
+    }
+
+    function setFiltro(clave, valor) {
+      if (clave === 'filas') valor = +valor;
+      // Elegir de nuevo el mismo libro (tarjeta) lo desactiva
+      if (clave === 'libro' && valor !== '' && filtros.libro === valor) valor = '';
+      filtros[clave] = valor;
+      sincronizarControles();
+      aplicarFiltros(false);
+    }
+
+    function quitarFiltro(clave) {
+      filtros[clave] = FILTROS_INICIALES[clave];
+      sincronizarControles(true);
+      // Texto y año se buscan en el servidor; el resto refina localmente
+      if (clave === 'texto' || clave === 'anio' || clave === 'hoja') cargarDatos(false); else aplicarFiltros(false);
+    }
+
+    function resetFiltrosEstado() {
+      filtros = { ...FILTROS_INICIALES };
+      sincronizarControles(true);
+    }
+
+    function limpiarFiltros() {
+      const { texto, anio, hoja } = filtros;
+      filtros = { ...FILTROS_INICIALES, texto, anio, hoja, orden: filtros.orden, filas: filtros.filas };
+      sincronizarControles();
+      aplicarFiltros(false);
+    }
+
+    function limpiarTodo() {
+      const habiaBusqueda = !!(filtros.texto || filtros.anio || filtros.hoja);
+      filtros = { ...FILTROS_INICIALES, orden: filtros.orden, filas: filtros.filas };
+      sincronizarControles(true);
+      if (habiaBusqueda) cargarDatos(false); else aplicarFiltros(false);
+    }
+
+    function limpiarTexto() {
+      document.getElementById('search-input').value = '';
+      document.getElementById('search-clear').classList.add('d-none');
+      if (filtros.texto) { filtros.texto = ''; cargarDatos(false); }
+      document.getElementById('search-input').focus();
+    }
+
+    function toggleFiltros() {
+      const panel = document.getElementById('filtros-panel');
+      panel.classList.toggle('d-none');
+      document.getElementById('btn-toggle-filtros').classList.toggle('open', !panel.classList.contains('d-none'));
+    }
+
+    function atajoFecha(tipo) {
+      const hoy = new Date();
+      const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      if (tipo === 'anio-actual') {
+        filtros.desde = `${hoy.getFullYear()}-01-01`;
+        filtros.hasta = `${hoy.getFullYear()}-12-31`;
+      } else if (tipo === '12m') {
+        const ini = new Date(hoy); ini.setFullYear(ini.getFullYear() - 1);
+        filtros.desde = iso(ini);
+        filtros.hasta = iso(hoy);
+      } else {
+        filtros.desde = ''; filtros.hasta = '';
+      }
+      sincronizarControles();
+      aplicarFiltros(false);
+    }
+
+    // La búsqueda se envía al servidor con Enter o con el botón Buscar
+    document.getElementById('search-input').addEventListener('input', (e) => {
+      document.getElementById('search-clear').classList.toggle('d-none', !e.target.value);
+    });
+    document.getElementById('search-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') buscarDesdeInputs();
+      if (e.key === 'Escape' && e.target.value) limpiarTexto();
+    });
+    document.getElementById('year-filter').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') buscarDesdeInputs();
+    });
+
+    function renderTabla() {
       const thead = document.getElementById('table-head');
       const tbody = document.getElementById('results-body');
       
@@ -1254,67 +1841,79 @@
       
       thead.innerHTML = headerHTML;
 
-      if (res) {
-        datosActuales = (res || []).map(item => ({ ...item, libro: item.nro_libro }));
-        paginaActual = 1;
-      }
-
       tbody.innerHTML = '';
-      if (datosActuales.length === 0) {
-        document.getElementById('table-container').classList.add('d-none');
+      const vacio = datosActuales.length === 0;
+      document.getElementById('empty-state').classList.toggle('d-none', !vacio || datosBase.length === 0);
+      document.getElementById('table-container').classList.toggle('d-none', vacio);
+      if (vacio) {
+        renderizarPaginacion();
         return;
       }
-      document.getElementById('table-container').classList.remove('d-none');
 
       const inicio = (paginaActual - 1) * filasPorPagina;
       const fin = inicio + filasPorPagina;
       const datosPaginados = datosActuales.slice(inicio, fin);
+      let filasHTML = '';
 
       datosPaginados.forEach((f, i) => {
         const indiceReal = inicio + i;
         
-        // UX/UI: Creamos un badge sutil y moderno solo si hay un estado escrito en el Sheets
+        // Badge de estado: verde si ya lo revisó una persona, ámbar si sigue en revisión
         let badgeEstado = "";
-        if (f.estado && f.estado.toString().trim() !== "") {
-          badgeEstado = `<span class="badge bg-warning bg-opacity-10 text-warning-emphasis border border-warning-subtle mt-1 d-inline-block" style="font-size: 0.65rem; letter-spacing: 0.5px;">${f.estado.toUpperCase()}</span>`;
+        if (f._estadoLabel) {
+          const ok = f._estado === 'revisado';
+          badgeEstado = `<span class="badge badge-rev ${ok ? 'bg-success bg-opacity-10 text-success-emphasis border border-success-subtle' : 'bg-warning bg-opacity-10 text-warning-emphasis border border-warning-subtle'} mt-1 d-inline-block">${esc(f._estadoLabel.toUpperCase())}</span>`;
         }
 
-        let rowHTML = `<tr>
+        filasHTML += `<tr>
           <td class="align-middle">
-            <span class="fw-bold text-primary small d-block">${f.id}</span>
+            <span class="fw-bold text-primary small d-block">${esc(f.id)}</span>
             ${badgeEstado}
           </td>
-          <td class="align-middle"><span class="badge bg-light text-dark border p-2">L:${f.libro} F:${f.foja} P:${f.numero}</span></td>
+          <td class="align-middle"><span class="badge bg-light text-dark border p-2">L:${esc(f.libro)} F:${esc(f.foja)} P:${esc(f.numero)}</span></td>
           <td class="align-middle">
-            <span class="fw-semibold d-block text-dark" style="font-size:0.9rem;">${(f.nombre_completo || "").toUpperCase()}</span>
+            <span class="fw-semibold d-block text-dark" style="font-size:0.9rem;">${resaltar((f.nombre_completo || "").toUpperCase(), tokensActivos)}</span>
             <small class="text-muted" style="font-size: 0.70rem;">
-               <i class="fas fa-users me-1 opacity-50"></i> ${(f.padre || "-").toUpperCase()} y ${(f.madre || "-").toUpperCase()}
+               <i class="fas fa-users me-1 opacity-50"></i> ${resaltar((f.padre || "-").toUpperCase(), tokensActivos)} y ${resaltar((f.madre || "-").toUpperCase(), tokensActivos)}
             </small>
            </td>`;
 
         if(moduloActual === 'confirmacion') {
-          rowHTML += `<td class="align-middle small fw-bold text-success">${f.catequesis || "-"}</td>`;
+          filasHTML += `<td class="align-middle small fw-bold text-success">${esc(f.catequesis || "-")}</td>`;
         }
 
-        rowHTML += `<td class="text-muted small align-middle">${f.fecha_confirmacion || f.fecha_bautizo || "-"}</td>
+        filasHTML += `<td class="text-muted small align-middle">${esc(f.fecha_confirmacion || f.fecha_bautizo || "-")}</td>
           <td class="align-middle"><button class="btn btn-action btn-sm" onclick="abrirPanelDetalle(${indiceReal})">Ver</button></td>
          </tr>`;
-        tbody.innerHTML += rowHTML;
       });
+      tbody.innerHTML = filasHTML;
 
       renderizarPaginacion();
     }
     
+    let tabActual = 'tab-busqueda';
     function cambiarPestaña(tabId) {
+        tabActual = tabId;
         document.querySelectorAll('.vista-app').forEach(el => el.classList.add('d-none'));
-        document.querySelectorAll('.nav-pill-custom').forEach(el => el.classList.remove('active'));
-        
         const targetTab = document.getElementById(tabId);
         if (targetTab) targetTab.classList.remove('d-none');
-        
-        const btnId = "btn-" + tabId;
-        const targetBtn = document.getElementById(btnId);
-        if (targetBtn) targetBtn.classList.add('active');
+        actualizarNavActivo();
+    }
+
+    // Marca la opción activa tanto en el menú lateral como en el menú móvil
+    function actualizarNavActivo() {
+      const clave = (tabActual === 'tab-historial') ? 'historial' : moduloActual;
+      const ids = {
+        bautismo: ['btn-mod-bautismo', 'mobile-btn-bautismo'],
+        confirmacion: ['btn-mod-confirmacion', 'mobile-btn-confirmacion'],
+        candidatos: ['btn-mod-candidatos', 'mobile-btn-candidatos'],
+        historial: ['btn-tab-historial', 'mobile-btn-historial']
+      };
+      document.querySelectorAll('.nav-pill-custom').forEach(el => { el.classList.remove('active'); el.removeAttribute('aria-current'); });
+      (ids[clave] || []).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.classList.add('active'); el.setAttribute('aria-current', 'page'); }
+      });
     }
 
     function mostrarApp() {
@@ -1339,63 +1938,42 @@
       Backend.cerrarSesion();
     }
 
-    async function realizarPeticionBusqueda(termino, anio) {
-      document.getElementById('loading-indicator').classList.remove('d-none');
-      document.getElementById('table-container').classList.add('d-none');
-      try {
-        const data = await Backend.llamar(moduloDatos, { accion: 'buscar', termino, anio });
-        if (data.success === false) {
-          alert('Error: ' + data.message);
-          mostrarResultados([]);
-        } else {
-          mostrarResultados(data.data);
-        }
-      } catch (e) { console.error(e); }
-      document.getElementById('loading-indicator').classList.add('d-none');
-    }
-
-    function ejecutarBusqueda() {
-      const termino = document.getElementById('search-input').value.trim();
-      const anio = document.getElementById('year-filter').value.trim();
-      cambiarPestaña('tab-busqueda');
-      realizarPeticionBusqueda(termino, anio);
-    }
-
-    document.getElementById('search-input').addEventListener('keypress', (e) => { 
-      if (e.key === 'Enter') ejecutarBusqueda(); 
-    });
-    document.getElementById('year-filter').addEventListener('keypress', (e) => { 
-      if (e.key === 'Enter') ejecutarBusqueda(); 
-    });
-
     function renderizarPaginacion() {
       const totalPaginas = Math.ceil(datosActuales.length / filasPorPagina);
       const container = document.getElementById('pagination-controls');
       const info = document.getElementById('pagination-info');
       
       container.innerHTML = '';
-      info.innerText = `Mostrando página ${paginaActual} de ${totalPaginas} (${datosActuales.length} registros)`;
+      if (datosActuales.length === 0) { info.innerText = ''; return; }
+      const ini = (paginaActual - 1) * filasPorPagina + 1;
+      const fin = Math.min(paginaActual * filasPorPagina, datosActuales.length);
+      info.innerText = `Mostrando ${fmtN(ini)}–${fmtN(fin)} de ${fmtN(datosActuales.length)} registros`;
 
       if (totalPaginas <= 1) return;
 
-      container.innerHTML += `<li class="page-item ${paginaActual === 1 ? 'disabled' : ''}">
-        <a class="page-link" href="javascript:void(0)" onclick="cambiarPagina(${paginaActual - 1})"><i class="fas fa-chevron-left"></i></a>
-      </li>`;
+      const item = (p, label, activo, deshabilitado) =>
+        `<li class="page-item ${activo ? 'active' : ''} ${deshabilitado ? 'disabled' : ''}">
+          <a class="page-link" href="javascript:void(0)" onclick="cambiarPagina(${p})">${label}</a></li>`;
 
+      let html = item(paginaActual - 1, '<i class="fas fa-chevron-left"></i>', false, paginaActual === 1);
+      // Ventana de páginas: primera, última y las cercanas a la actual (con "…" en medio)
+      let previa = 0;
       for (let i = 1; i <= totalPaginas; i++) {
-        container.innerHTML += `<li class="page-item ${paginaActual === i ? 'active' : ''}">
-          <a class="page-link" href="javascript:void(0)" onclick="cambiarPagina(${i})">${i}</a>
-        </li>`;
+        if (i === 1 || i === totalPaginas || Math.abs(i - paginaActual) <= 2) {
+          if (previa && i - previa > 1) html += `<li class="page-item disabled"><span class="page-link">…</span></li>`;
+          html += item(i, i, paginaActual === i, false);
+          previa = i;
+        }
       }
-
-      container.innerHTML += `<li class="page-item ${paginaActual === totalPaginas ? 'disabled' : ''}">
-        <a class="page-link" href="javascript:void(0)" onclick="cambiarPagina(${paginaActual + 1})"><i class="fas fa-chevron-right"></i></a>
-      </li>`;
+      html += item(paginaActual + 1, '<i class="fas fa-chevron-right"></i>', false, paginaActual === totalPaginas);
+      container.innerHTML = html;
     }
 
     function cambiarPagina(p) {
+      const totalPaginas = Math.max(1, Math.ceil(datosActuales.length / filasPorPagina));
+      if (p < 1 || p > totalPaginas) return;
       paginaActual = p;
-      mostrarResultados();
+      renderTabla();
       document.querySelector('.main-content').scrollTop = 0;
     }
 
@@ -1480,10 +2058,10 @@
         const data = await Backend.llamar(moduloDatos, pckg);
         
         if (data.success) {
+          if (data.advertencia) alert(data.advertencia);
           sidebarDetalle.hide();
           document.getElementById('btn-open-pdf').href = data.pdfUrl;
           modalExito.show();
-          if (data.advertencia) alert(data.advertencia);
         } else {
           alert("Error: " + data.message);
         }
@@ -1729,7 +2307,7 @@
         const data = await Backend.llamar(moduloDatos, { accion: 'editar', datos: datosEditados });
         if (data.success) {
           cancelarEdicion();
-          ejecutarBusqueda();
+          cargarDatos(true, true); // vuelve a leer los datos y mantiene filtros y página
           let modalUpdateSuccess = new bootstrap.Modal(document.getElementById('updateSuccessModal'));
           modalUpdateSuccess.show();
         } else { alert("Error: " + data.message); }

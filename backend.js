@@ -201,9 +201,33 @@
       consulta = consulta.gte(CAMPO_FECHA[modulo], anio + '-01-01').lte(CAMPO_FECHA[modulo], anio + '-12-31');
     }
 
-    const filas = revisar(await consulta.order('id', { ascending: true }).limit(30));
+    // Un libro se identifica igual que la pestaña del Sheets: LIBRO_B54, LIBROCONF1...
+    const libro = quitarPrefijoLibro(modulo, p.libro);
+    if (libro !== '') consulta = consulta.eq('nro_libro', libro);
+
+    // "Cargar más": se piden limite + 1 filas para saber si todavía quedan registros
+    const limite = Math.max(1, parseInt(p.limite, 10) || 30);
+    const desde = Math.max(0, parseInt(p.desde, 10) || 0);
+    const filas = revisar(await consulta.order('id', { ascending: true }).range(desde, desde + limite));
     const convertir = (modulo === 'bautismo') ? filaBautismo : filaConfirmacion;
-    return { success: true, data: filas.map(convertir) };
+    return { success: true, data: filas.slice(0, limite).map(convertir), hay_mas: filas.length > limite };
+  }
+
+  const PREFIJO_LIBRO = { bautismo: 'LIBRO_B', confirmacion: 'LIBROCONF' };
+
+  function quitarPrefijoLibro(modulo, hoja) {
+    const nombre = texto(hoja).trim();
+    const prefijo = PREFIJO_LIBRO[modulo];
+    return nombre.toUpperCase().startsWith(prefijo) ? nombre.slice(prefijo.length) : nombre;
+  }
+
+  // Lista de libros con su conteo (usa la función listar_libros de Supabase, ver README)
+  async function sbListarLibros(modulo) {
+    const filas = revisar(await sb().rpc('listar_libros', { p_tabla: TABLAS[modulo] }));
+    const libros = filas
+      .filter(f => texto(f.nro_libro).trim() !== '')
+      .map(f => ({ hoja: PREFIJO_LIBRO[modulo] + f.nro_libro, total: Number(f.total) }));
+    return { success: true, data: libros };
   }
 
   async function sbEditar(modulo, p) {
@@ -410,6 +434,7 @@
   // ========================== MODO SUPABASE: despachador ==========================
   const ACCIONES_SUPABASE = {
     buscar: sbBuscar,
+    listar_libros: sbListarLibros,
     editar: sbEditar,
     generar_partida: sbGenerarPartida,
     obtener_historial: sbHistorial,
